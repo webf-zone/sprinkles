@@ -1,0 +1,36 @@
+{
+  "name": "sprinkles",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "rollup -c --watch",
+    "build": "PROD=true rollup -c",
+    "storybook": "start-storybook -p 9001 -c storybook"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webf-zone/sprinkles.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/webf-zone/sprinkles/issues"
+  },
+  "homepage": "https://github.com/webf-zone/sprinkles#readme",
+  "dependencies": {
+    "lit-element": "^2.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-typescript": "^7.3.3",
+    "@storybook/addon-notes": "^5.0.9",
+    "@storybook/html": "^5.0.9",
+    "babel-loader": "^8.0.5",
+    "node-sass": "^4.11.0",
+    "rollup": "^1.10.0",
+    "rollup-plugin-node-resolve": "^4.2.3",
+    "typescript": "^3.4.3"
+  }
+}
