@@ -20,17 +20,23 @@
   },
   "homepage": "https://github.com/webf-zone/sprinkles#readme",
   "dependencies": {
+    "@types/classnames": "^2.2.7",
+    "classnames": "^2.2.6",
     "lit-element": "^2.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/plugin-proposal-decorators": "^7.4.0",
     "@babel/preset-typescript": "^7.3.3",
     "@storybook/addon-notes": "^5.0.9",
     "@storybook/html": "^5.0.9",
     "babel-loader": "^8.0.5",
     "node-sass": "^4.11.0",
+    "raw-loader": "^2.0.0",
     "rollup": "^1.10.0",
     "rollup-plugin-node-resolve": "^4.2.3",
+    "sass-loader": "^7.1.0",
     "typescript": "^3.4.3"
   }
 }

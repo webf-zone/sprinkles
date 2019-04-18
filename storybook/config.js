@@ -2,12 +2,7 @@
 import '../src/multiselect/multiselect';
 
 
-import { withNotes } from '@storybook/addon-notes';
-import { addDecorator, configure } from '@storybook/html';
-
-// withNotes
-addDecorator(withNotes);
-
+import { configure } from '@storybook/html';
 
 function loadStories() {
   require('../src/multiselect/multiselect.story');

@@ -1,0 +1,105 @@
+* {
+  box-sizing: border-box;
+}
+
+:host {
+  display: inline-flex;
+}
+
+.multiselect {
+  position: relative;
+
+  // background-color: rgba(0, 0, 0, 0.15);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+
+  padding: 0.5rem 1rem;
+  border: 1px solid black;
+
+  border-radius: 8px;
+
+  & > * {
+    margin-right: 0.5rem;
+  }
+}
+
+.chip {
+  display: flex;
+  padding: 3px 6px;
+
+  align-items: center;
+
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+
+  &__text {
+    margin-right: 0.25rem;
+  }
+
+  &__clear {
+    cursor: pointer;
+    fill: gray;
+  }
+}
+
+input {
+  display: block;
+
+  border: none;
+
+  outline: none;
+}
+
+.content {
+
+  display: none;
+  position: absolute;
+  width: 100%;
+  left: 0;
+
+  border: 1px solid black;
+  border-top: none;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.divider {
+  padding: 0 1rem 0.5rem;
+}
+
+.no-records {
+  padding: 0 1rem;
+}
+
+.line {
+  height: 1px;
+  background-color: black;
+}
+
+
+.list > li {
+  list-style: none;
+  padding: 0 1rem;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.multiselect--opened {
+
+  .content {
+    display: block;
+  }
+
+  .header {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    border-bottom: none;
+  }
+
+}
