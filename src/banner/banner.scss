@@ -1,0 +1,37 @@
+* {
+  box-sizing: border-box;
+}
+
+
+.banner {
+  width: 100%;
+  border: 1px solid #e2e2e2;
+  padding: 1rem;
+  display: none;
+
+  &.open {
+    display: block;
+    animation: openBanner 0.2s ease-in-out 1 forwards;
+  }
+
+  .posiionFixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  .content {
+    margin-bottom: 1rem;
+  }
+
+}
+
+
+@keyframes openBanner {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
