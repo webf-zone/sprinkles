@@ -1,10 +1,11 @@
 // import resolve from 'rollup-plugin-node-resolve';
-// import { uglify } from "rollup-plugin-uglify";
+// import { uglify } from 'rollup-plugin-uglify';
+import scss from 'rollup-plugin-scss'
+import typescript from 'rollup-plugin-typescript';
 
-const prod = process.env.hasOwnProperty('PROD');
 
 const baseConfig = {
-    input: 'src/main.js',
+    input: 'src/main.ts',
     output: {
       file: 'dist/bundle.js',
       format: 'esm'
@@ -12,11 +13,12 @@ const baseConfig = {
     },
 
     plugins: [
+      typescript(),
+      scss({ output: false })
     ]
-
 };
 
-const devConfig = {
+const prodConfig = {
     ...baseConfig,
 
     watch: {
@@ -31,16 +33,4 @@ const devConfig = {
 
 };
 
-const prodConfig = {
-    ...baseConfig,
-
-    plugins: [
-        ...baseConfig.plugins,
-        // resolve(),
-        // uglify(),
-    ]
-};
-
-const config = prod ? prodConfig : devConfig;
-
-export default config;
+export default prodConfig;
