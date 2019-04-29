@@ -1,13 +1,13 @@
 // SUT
 import '../src/multiselect/multiselect';
-import '../src/banner/banner.story';
+import '../src/banner/banner';
 
 
 import { configure } from '@storybook/html';
 
 function loadStories() {
   require('../src/multiselect/multiselect.story');
-  require('../src/banner/banner');
+  require('../src/banner/banner.story');
 }
 
 configure(loadStories, module);

@@ -9,23 +9,27 @@ export class BannerElement extends LitElement {
   static styles = [unsafeCSS(style)];
 
   @property({ type: Boolean })
-  private openBanner: boolean = false;
+  public open: boolean = false;
 
-  @property({ type: Boolean })
-  private fixedPosition: boolean = false;
+  public set fixed(val: boolean) {
+    if (val) {
+      this.classList.add('fixed');
+    } else {
+      this.classList.remove('fixed');
+    }
+  }
 
+  render() {
 
-  render () {
-    const classes = classnames('banner', this.openBanner && 'open',
-        this.fixedPosition && 'positionFixed');
+    const classes = classnames('banner', this.open && 'open');
 
-    return html `
-      <div class='${classes}'>
+    return html`
+      <div class=${classes}>
         <div class='content'>
-          <slot name='bannerContent'><slot>
+          <slot></slot>
         </div>
         <div class='action'>
-          <slot name='bannerAction'></slot>
+          <slot name='action'></slot>
         </div>
       </div>
     `;

@@ -10,33 +10,43 @@ storiesOf('BannerElement', module)
   })
   .add('Simple', () => {
 
+    const data = { open: false };
+
     const rootElm = document.createDocumentFragment();
 
-    const clickHandler = () => { render(template({open: false}), rootElm)}
+    const onToggle = () => {
+      data.open = !data.open;
+      render(template(data), rootElm);
+    };
+
+    const onDismiss = () => {
+
+    };
 
     const template = (data: any) => html`
       <div>
-        <wf-banner .openBanner='${data.open}'>
-          <span slot="bannerContent">Banner Text</span>
-          <button slot="bannerAction">Dismiss<button>
+        <wf-banner .open=${data.open}>
+          <span>Banner Text</span>
+          <button slot='action'>Dismiss</button>
         </wf-banner>
       </div>
-      <button @click=${clickHandler}>click</button>
+      <button @click=${onToggle}>Toggle</button>
     `;
 
     // Render using lit-html
-    render(template({open: true}), rootElm);
+    render(template(data), rootElm);
 
     return rootElm;
   })
-  .add('FixedPosition', () => {
+  .add('Fixed Position', () => {
+
     const rootElm = document.createDocumentFragment();
 
     const template = () => html`
       <div>
-        <wf-banner .openBanner='${true}' .fixedPosition='${true}'>
-          <span slot="bannerContent">Banner Text</span>
-          <button slot="bannerAction">Dismiss<button>
+        <wf-banner .open=${true} .fixed=${true}>
+          <span>Banner Text</span>
+          <button slot='action'>Dismiss</button>
         </wf-banner>
       </div>
     `;
@@ -45,4 +55,4 @@ storiesOf('BannerElement', module)
     render(template(), rootElm);
 
     return rootElm;
-  })
+  });
