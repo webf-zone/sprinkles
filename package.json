@@ -1,6 +1,6 @@
 {
   "name": "@webf/sprinkles",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Reasonable web components",
   "main": "dist/bundle.js",
   "module": "dist/bundle.js",
