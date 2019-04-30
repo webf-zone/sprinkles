@@ -5,7 +5,6 @@ import { emit } from '../util';
 
 import style from './multiselect.scss';
 
-@customElement('wf-multiselect')
 export class MultiSelect<T extends { label: string } = any> extends LitElement {
 
   static styles = [unsafeCSS(style)];

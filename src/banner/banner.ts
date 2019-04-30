@@ -3,8 +3,7 @@ import { LitElement, html, customElement, unsafeCSS, property } from 'lit-elemen
 
 import style from './banner.scss';
 
-@customElement('wf-banner')
-export class BannerElement extends LitElement {
+export class Banner extends LitElement {
 
   static styles = [unsafeCSS(style)];
 
