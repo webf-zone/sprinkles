@@ -2,7 +2,7 @@ import { storiesOf } from '@storybook/html';
 import { html, render } from 'lit-html';
 
 
-import notes from './banner.md';
+import notes from './Banner.md';
 
 storiesOf('BannerElement', module)
   .addParameters({
