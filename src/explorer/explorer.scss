@@ -1,0 +1,48 @@
+* {
+  box-sizing: border-box;
+}
+
+:host {
+  display: block;
+
+  --right-panel-width: 75%;
+}
+
+.explorer {
+  width: 100%;
+  display: flex;
+}
+
+.sidebar {
+  display: none;
+  width: 100%;
+}
+
+.main {
+  width: 100%;
+}
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+@media screen and (min-width: 767px) {
+
+  .sidebar {
+    display: inline-block;
+    width: cal(100 - var(--right-panel-width));
+    flex: 1;
+  }
+
+  .main {
+    display: inline-block;
+    vertical-align: top;
+    width: var(--right-panel-width);
+
+  }
+
+}

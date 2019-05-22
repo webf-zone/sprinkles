@@ -1,6 +1,7 @@
 import { CSSResult } from 'lit-element';
 
 import { Banner } from './banner/banner';
+import { Explorer } from './explorer/explorer';
 import { MultiSelect } from './multiselect/multiselect';
 
 export function registerBanner(styles: CSSResult[]) {
@@ -9,6 +10,12 @@ export function registerBanner(styles: CSSResult[]) {
   Banner.styles = Banner.styles.concat(styles);
 
   customElements.define('wf-banner', Banner);
+}
+
+export function registerExplorer(styles: CSSResult[]) {
+  Explorer.styles =  Explorer.styles.concat(styles);
+
+  customElements.define('wf-explorer', Explorer);
 }
 
 export function registerMultiSelect() {
