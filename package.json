@@ -5,9 +5,8 @@
   "main": "dist/bundle.js",
   "module": "dist/bundle.js",
   "scripts": {
-    "dev": "rollup -c --watch",
     "build": "PROD=true rollup -c",
-    "storybook": "start-storybook -p 9001 -c storybook"
+    "dev": "start-storybook -p 9001 -c storybook"
   },
   "repository": {
     "type": "git",
@@ -41,6 +40,7 @@
     "@storybook/addon-notes": "^5.0.9",
     "@storybook/html": "^5.0.9",
     "babel-loader": "^8.0.5",
+    "haunted": "^4.4.0",
     "node-sass": "^4.11.0",
     "raw-loader": "^2.0.0",
     "rollup": "^1.10.0",
