@@ -17,8 +17,14 @@ export function create() {
   const overlay = document.createElement('wf-overlay') as Overlay;
 
   const surface: Surface = {
+
+    // z-index
     layer: 0,
+
+    // Actual Overlay web component
     overlay,
+
+    // Functions
     show, dismiss, children
   };
 
@@ -50,7 +56,15 @@ export function create() {
   }
 
   function children(nodes: HTMLElement[]) {
-    overlay.nodes = nodes;
+
+    while (overlay.lastChild) {
+      overlay.lastChild.remove();
+    }
+
+    overlay.append(...nodes);
+
+    // replaceWith not working
+    // overlay.replaceWith(...nodes);
   }
 
   return surface;

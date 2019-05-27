@@ -16,9 +16,6 @@ export class Overlay extends LitElement {
   ];
 
   @property({})
-  public nodes: HTMLElement[] = [];
-
-  @property({})
   public zIndex: number = 1;
 
   public render() {
@@ -26,7 +23,7 @@ export class Overlay extends LitElement {
       <style>
         :host { z-index: ${this.zIndex}; }
       </style>
-      ${this.nodes}
+      <slot></slot>
     `;
   }
 
