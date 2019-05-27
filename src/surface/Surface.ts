@@ -9,77 +9,40 @@ interface SurfaceChild {
   popper?: Popper;
 }
 
-interface Surface {
+export class Surface {
 
   // z-index of the overlay
-  layer: number;
+  layer: number = 0;
 
   // Actual Overlay web component
-  overlay: Overlay;
+  overlay: Overlay = document.createElement('wf-overlay') as Overlay;
 
   // All the child nodes
-  elms?: HTMLElement[];
+  elms: HTMLElement[] = [];
 
-  // Functions
-  show: () => void;
-  dismiss: () => void;
-  children: (nodes: HTMLElement[]) => void;
-}
-
-// Array `surfaces` is a queue acting as a singleton and thus mutable.
-const surfaces: Surface[] = [];
-
-export function create() {
-
-  const overlay = document.createElement('wf-overlay') as Overlay;
-
-  const surface: Surface = {
-
-    layer: 0,
-    overlay,
-    elms: [],
-
-    show, dismiss, children
-  };
-
-
-  function show() {
-
-    const layer = surfaces.length === 0 ? 100 : surfaces[surfaces.length - 1].layer + 1;
-
-    surface.layer = layer;
-
-    surfaces.push(surface);
+  show(layer: number) {
 
     // Set to the created overlay
-    overlay.zIndex = layer;
+    this.overlay.zIndex = this.layer = layer;
 
     // Append the overlay to the body.
-    document.body.appendChild(overlay);
+    document.body.appendChild(this.overlay);
   };
 
-  function dismiss() {
-
-    document.body.removeChild(overlay);
-
-    const index = surfaces.indexOf(surface);
-
-    if (index > -1) {
-      surfaces.splice(index, 1);
-    }
+  dismiss() {
+    document.body.removeChild(this.overlay);
   }
 
-  function children(nodes: HTMLElement[]) {
+  children(nodes: HTMLElement[]) {
 
-    while (overlay.lastChild) {
-      overlay.lastChild.remove();
+    while (this.overlay.lastChild) {
+      this.overlay.lastChild.remove();
     }
 
-    overlay.append(...nodes);
+    this.overlay.append(...nodes);
 
     // replaceWith not working
     // overlay.replaceWith(...nodes);
   }
 
-  return surface;
 }

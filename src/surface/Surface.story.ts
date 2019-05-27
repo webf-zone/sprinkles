@@ -4,7 +4,7 @@ import { customElement, LitElement, html } from 'lit-element';
 
 // SUT
 import notes from './Surface.md';
-import { create } from './Surface';
+import { create } from './Service';
 
 storiesOf('Surface', module)
   .addParameters({ notes })
