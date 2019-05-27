@@ -1,9 +1,26 @@
+import Popper from 'popper.js';
+
 import { Overlay } from './Overlay';
 
+interface SurfaceChild {
+  elm: HTMLElement;
+
+  anchor: HTMLElement;
+  popper?: Popper;
+}
+
 interface Surface {
+
+  // z-index of the overlay
   layer: number;
+
+  // Actual Overlay web component
   overlay: Overlay;
 
+  // All the child nodes
+  elms?: HTMLElement[];
+
+  // Functions
   show: () => void;
   dismiss: () => void;
   children: (nodes: HTMLElement[]) => void;
@@ -18,13 +35,10 @@ export function create() {
 
   const surface: Surface = {
 
-    // z-index
     layer: 0,
-
-    // Actual Overlay web component
     overlay,
+    elms: [],
 
-    // Functions
     show, dismiss, children
   };
 
