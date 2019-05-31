@@ -1,6 +1,6 @@
 import { Surface } from './Surface';
 
-interface SurfaceCtrl {
+export interface SurfaceCtrl {
   show: () => void;
   dismiss: () => void;
   children: (nodes: HTMLElement[]) => void;

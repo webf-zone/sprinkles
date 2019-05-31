@@ -3,6 +3,7 @@ import { CSSResult } from 'lit-element';
 import { Banner } from './banner/banner';
 import { MultiSelect } from './multiselect/multiselect';
 import { Overlay } from './surface/Overlay';
+import { Menu } from './menu/Menu';
 
 export function registerBanner(styles: CSSResult[]) {
 
@@ -10,6 +11,10 @@ export function registerBanner(styles: CSSResult[]) {
   Banner.styles = Banner.styles.concat(styles);
 
   customElements.define('wf-banner', Banner);
+}
+
+export function registerMenu() {
+  customElements.define('wf-menu', Menu);
 }
 
 export function registerMultiSelect() {

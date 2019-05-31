@@ -1,6 +1,7 @@
 import Popper from 'popper.js';
 
 import { Overlay } from './Overlay';
+import { setChildren } from './helper';
 
 interface SurfaceChild {
   elm: HTMLElement;
@@ -34,15 +35,7 @@ export class Surface {
   }
 
   children(nodes: HTMLElement[]) {
-
-    while (this.overlay.lastChild) {
-      this.overlay.lastChild.remove();
-    }
-
-    this.overlay.append(...nodes);
-
-    // replaceWith not working
-    // overlay.replaceWith(...nodes);
+    setChildren(this.overlay, nodes);
   }
 
 }
