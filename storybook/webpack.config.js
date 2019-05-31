@@ -25,7 +25,7 @@ module.exports = ({ config, mode }) => {
         loader: 'sass-loader',
         options: {
           includePaths: [
-            path.resolve(__dirname, 'node_modules')
+            path.resolve(__dirname, '../node_modules')
           ]
         }
       }

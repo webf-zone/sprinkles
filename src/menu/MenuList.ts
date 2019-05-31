@@ -1,44 +1,37 @@
-// import { LitElement, html, property, TemplateResult } from 'lit-element';
-// import { render } from 'lit-html';
-// import { create, SurfaceCtrl } from '../surface/Service';
-// import { setChildren } from '../surface/helper';
+import { LitElement, html, property, TemplateResult, unsafeCSS } from 'lit-element';
 
-// /**
-//  * @export
-//  * @class Menu
-//  * @extends {LitElement}
-//  */
-// export class MenuList<T = any> extends LitElement {
+/**
+ * @export
+ * @class Menu
+ * @extends {LitElement}
+ */
+export class MenuList<T = any> extends LitElement {
 
-//   static styles = [];
+  @property()
+  renderer: ((item: T) => TemplateResult) = (item) => html`${item}`;
 
-//   @property()
-//   renderer: ((item: T) => TemplateResult) = (item) => html`<div>${item}</div>`;
+  @property()
+  items: T[] = [];
 
-//   private listCache: Map<T, HTMLElement> = new Map();
+  protected createRenderRoot() {
+    return this;
+  }
 
-//   set items(items: T[]) {
-//     this.renderItems(items);
-//   }
+  render() {
 
-//   private renderItems(items: T[]) {
-//     const newMap = new Map();
+    const items = this.items.map((x) => html`
+      <wf-menu-item>${this.renderer(x)}</wf-menu-item>`);
 
-//     items.map((item) => {
-//       const elm = this.listCache.get(item) || document.createElement('div');
+    return html`${items}`;
+  }
 
-//         render(this.renderer(item), elm);
+}
 
-//         newMap.set(item, elm);
-//     });
+export class MenuItem extends LitElement {
 
-//     this.listCache = newMap;
-//   }
+  static styles = [];
 
-//   render() {
-//     return html`
-//       <slot></slot>
-//     `;
-//   }
-
-// }
+  protected createRenderRoot() {
+    return this;
+  }
+}

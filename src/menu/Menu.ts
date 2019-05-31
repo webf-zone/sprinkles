@@ -2,29 +2,29 @@ import { LitElement, html, property, TemplateResult } from 'lit-element';
 import { render } from 'lit-html';
 import { create, SurfaceCtrl } from '../surface/Service';
 import { setChildren } from '../surface/helper';
+import { MenuList } from './MenuList';
 
 /**
  * @export
  * @class Menu
  * @extends {LitElement}
  */
-export class Menu<T = any> extends LitElement {
+export class Menu<T = string> extends LitElement {
 
   static styles = [];
 
-  @property()
-  renderer: ((item: T) => TemplateResult) = (item) => html`<div>${item}</div>`;
-
-  private listCache: Map<T, HTMLElement> = new Map();
-
   private surfaceCtrl: SurfaceCtrl = create();
 
-  private menuListEl: HTMLElement = document.createElement('div');
+  private menuListEl: MenuList<T> = new MenuList<T>();
 
   private open: boolean = false;
 
   set items(items: T[]) {
-    this.renderItems(items);
+    this.menuListEl.items = items;
+  }
+
+  set renderer(func: (item: T) => TemplateResult) {
+    this.menuListEl.renderer = func;
   }
 
   constructor() {
@@ -33,24 +33,7 @@ export class Menu<T = any> extends LitElement {
     this.surfaceCtrl.children([this.menuListEl]);
   }
 
-  private renderItems(items: T[]) {
-    const newMap = new Map();
-
-    items.map((item) => {
-      const elm = this.listCache.get(item) || document.createElement('div');
-
-        render(this.renderer(item), elm);
-
-        newMap.set(item, elm);
-      });
-
-      this.listCache = newMap;
-    }
-
   private openMenu() {
-
-    setChildren(this.menuListEl, Array.from(this.listCache.values()));
-
     this.surfaceCtrl.show();
     this.open = true;
   }

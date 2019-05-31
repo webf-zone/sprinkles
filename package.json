@@ -40,6 +40,7 @@
     "@storybook/addon-notes": "^5.0.9",
     "@storybook/html": "^5.0.9",
     "babel-loader": "^8.0.5",
+    "css-loader": "^2.1.1",
     "haunted": "^4.4.0",
     "node-sass": "^4.11.0",
     "raw-loader": "^2.0.0",
@@ -48,6 +49,7 @@
     "rollup-plugin-scss": "^1.0.1",
     "rollup-plugin-typescript": "^1.0.1",
     "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
     "tslib": "^1.9.3",
     "typescript": "^3.4.3"
   }
