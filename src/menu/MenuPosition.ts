@@ -36,23 +36,31 @@ export function getFixedPixels(anchor: HTMLElement, position: MenuPosition) {
 
   switch (position) {
 
-    case 'top-left':
-      return { top: `${top}px`, left: `${left}px` };
-    case 'top-right':
+    case 'top-left': {
+      const maxHeight = `${vHeight - top - 32}px`;
+
+      return { top: `${top}px`, left: `${left}px`, maxHeight };
+    }
+    case 'top-right': {
       const rightVal = vWidth - right;
+      const maxHeight = `${vHeight - top - 32}px`;
 
-      return { top: `${top}px`, right: `${rightVal}px` };
+      return { top: `${top}px`, right: `${rightVal}px`, maxHeight };
+    }
 
-    case 'bottom-left':
+    case 'bottom-left': {
       const bottomVal = vHeight - bottom;
+      const maxHeight = `${bottom - 32}px`;
 
-      return { bottom: `${bottomVal}`, left: `${left}px` };
+      return { bottom: `${bottomVal}`, left: `${left}px`, maxHeight };
+    }
 
     case 'bottom-right': {
       const rightVal = vWidth - right;
       const bottomVal = vHeight - bottom;
+      const maxHeight = `${bottom - 32}px`;
 
-      return { bottom: `${bottomVal}px`, right: `${rightVal}px` };
+      return { bottom: `${bottomVal}px`, right: `${rightVal}px`, maxHeight };
     }
   }
 }
