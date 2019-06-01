@@ -3,13 +3,6 @@ import Popper from 'popper.js';
 import { Overlay } from './Overlay';
 import { setChildren } from './helper';
 
-interface SurfaceChild {
-  elm: HTMLElement;
-
-  anchor: HTMLElement;
-  popper?: Popper;
-}
-
 export class Surface {
 
   // z-index of the overlay

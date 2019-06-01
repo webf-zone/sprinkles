@@ -41,27 +41,46 @@ export class Menu<T = string> extends LitElement {
     this.surfaceCtrl.children([this.menuListEl]);
   }
 
-  private openMenu() {
-    this.surfaceCtrl.show();
+  private createDismissHandler() {
 
+    // Follow exact reverse steps.
+    // Additionally need transition event handler for smooth transition.
+    // 1. Remove dismiss handler.
+    // 2. Remove transition class.
+    // 3. After transition is complete, remove the surface from document.body.
 
-    const dismissHandler = () => {
+    const transitionEnd = (e: TransitionEvent) => {
+      if (e.propertyName === 'transform') {
+        this.menuListEl.removeEventListener('transitionend', transitionEnd);
+        this.surfaceCtrl.dismiss();
+      }
+    };
 
-      const transitionEnd = (e: TransitionEvent) => {
-        if (e.propertyName === 'transform') {
-          this.menuListEl.removeEventListener('transitionend', transitionEnd);
-
-          this.surfaceCtrl.dismiss();
-        }
-      };
-
-      this.surfaceCtrl.overlay.removeEventListener('click', dismissHandler);
+    const handler = () => {
+      this.surfaceCtrl.overlay.removeEventListener('click', handler);
       this.menuListEl.addEventListener('transitionend', transitionEnd);
 
       requestAnimationFrame(() => this.menuListEl.classList.remove('open'));
     };
 
-    this.surfaceCtrl.overlay.addEventListener('click', dismissHandler);
+    return handler;
+  }
+
+  private openMenu() {
+
+    // Steps to show dropdown menu:
+    // 1. Add the surface to document.body.
+    // 2. Show the surface so that dimensions of floating MenuListEl can be computed.
+    // 3. Generate a dropdown dismiss handler.
+    // 4. Calculate menu-transition direction and fixed position.
+    // 5. Apply those styles to the MenuListEl.
+    // 6. Add the transition class.
+    // 7. Assign a dismiss handler.
+    // When dismissing, exact reverse sequence must be followed.
+
+    const dismissHandler = this.createDismissHandler();
+
+    this.surfaceCtrl.show();
 
     requestAnimationFrame(() => {
       const suggestion = suggest(this, this.menuListEl);
@@ -78,6 +97,7 @@ export class Menu<T = string> extends LitElement {
 
       requestAnimationFrame(() => {
         this.menuListEl.classList.add('open');
+        this.surfaceCtrl.overlay.addEventListener('click', dismissHandler);
       });
     });
   }
