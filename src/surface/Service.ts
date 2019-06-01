@@ -1,6 +1,7 @@
 import { Surface } from './Surface';
 
 export interface SurfaceCtrl {
+  overlay: HTMLElement;
   show: () => void;
   dismiss: () => void;
   children: (nodes: HTMLElement[]) => void;
@@ -12,7 +13,9 @@ const surfaces: Surface[] = [];
 export function create() {
 
   const surface = new Surface();
-  const control: SurfaceCtrl = { show, dismiss, children };
+  const control: SurfaceCtrl = {
+    overlay: surface.overlay,
+    show, dismiss, children };
 
   function show() {
 

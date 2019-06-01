@@ -1,8 +1,17 @@
-import { LitElement, html, property, TemplateResult } from 'lit-element';
-import { render } from 'lit-html';
+import { LitElement, html, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { create, SurfaceCtrl } from '../surface/Service';
-import { setChildren } from '../surface/helper';
 import { MenuList } from './MenuList';
+import { suggest, getFixedPixels, MenuPosition } from './MenuPosition';
+
+import style from './Menu.scss';
+import { applyStyle } from '../util';
+
+const transform: { [key in MenuPosition]: Partial<CSSStyleDeclaration>; } = {
+  'top-left': { transformOrigin: 'top left' },
+  'top-right': { transformOrigin: 'top right' },
+  'bottom-left': { transformOrigin: 'bottom left' },
+  'bottom-right': { transformOrigin: 'bottom right' }
+};
 
 /**
  * @export
@@ -11,13 +20,12 @@ import { MenuList } from './MenuList';
  */
 export class Menu<T = string> extends LitElement {
 
-  static styles = [];
+  static styles = [unsafeCSS(style)];
 
   private surfaceCtrl: SurfaceCtrl = create();
 
   private menuListEl: MenuList<T> = new MenuList<T>();
-
-  private open: boolean = false;
+  private inlineStyle: Partial<CSSStyleDeclaration> = {};
 
   set items(items: T[]) {
     this.menuListEl.items = items;
@@ -35,7 +43,43 @@ export class Menu<T = string> extends LitElement {
 
   private openMenu() {
     this.surfaceCtrl.show();
-    this.open = true;
+
+
+    const dismissHandler = () => {
+
+      const transitionEnd = (e: TransitionEvent) => {
+        if (e.propertyName === 'transform') {
+          this.menuListEl.removeEventListener('transitionend', transitionEnd);
+
+          this.surfaceCtrl.dismiss();
+        }
+      };
+
+      this.surfaceCtrl.overlay.removeEventListener('click', dismissHandler);
+      this.menuListEl.addEventListener('transitionend', transitionEnd);
+
+      requestAnimationFrame(() => this.menuListEl.classList.remove('open'));
+    };
+
+    this.surfaceCtrl.overlay.addEventListener('click', dismissHandler);
+
+    requestAnimationFrame(() => {
+      const suggestion = suggest(this, this.menuListEl);
+      const position = getFixedPixels(this, suggestion);
+
+      const styles = {
+        ...position,
+        ...transform[suggestion]
+      } as any;
+
+      applyStyle(this.menuListEl, styles, this.inlineStyle);
+
+      this.inlineStyle = styles;
+
+      requestAnimationFrame(() => {
+        this.menuListEl.classList.add('open');
+      });
+    });
   }
 
   render() {

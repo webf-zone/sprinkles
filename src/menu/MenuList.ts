@@ -31,7 +31,7 @@ export class MenuItem extends LitElement {
 
   static styles = [];
 
-  protected createRenderRoot() {
-    return this;
+  render() {
+    return html`<slot></slot>`;
   }
 }

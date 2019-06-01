@@ -4,4 +4,21 @@ wf-menu-list {
   flex-direction: column;
 
   position: fixed;
+  opacity: 0;
+
+  transform: scale(0.1);
+
+  transition:
+    opacity 0.10s linear,
+    transform 0.14s cubic-bezier(0, 0, 0.2, 1);
+
+  &.open {
+    transition:
+      opacity 0.03s linear,
+      transform 0.12s cubic-bezier(0, 0, 0.2, 1);
+
+    opacity: 1;
+    transform: scale(1);
+  }
+
 }
