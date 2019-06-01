@@ -27,6 +27,9 @@ export class Menu<T = string> extends LitElement {
   private menuListEl: MenuList<T> = new MenuList<T>();
   private inlineStyle: Partial<CSSStyleDeclaration> = {};
 
+  private open: boolean = false;
+  private overlayHandler?: any;
+
   set items(items: T[]) {
     this.menuListEl.items = items;
   }
@@ -41,29 +44,10 @@ export class Menu<T = string> extends LitElement {
     this.surfaceCtrl.children([this.menuListEl]);
   }
 
-  private createDismissHandler() {
-
-    // Follow exact reverse steps.
-    // Additionally need transition event handler for smooth transition.
-    // 1. Remove dismiss handler.
-    // 2. Remove transition class.
-    // 3. After transition is complete, remove the surface from document.body.
-
-    const transitionEnd = (e: TransitionEvent) => {
-      if (e.propertyName === 'transform') {
-        this.menuListEl.removeEventListener('transitionend', transitionEnd);
-        this.surfaceCtrl.dismiss();
-      }
-    };
-
-    const handler = () => {
-      this.surfaceCtrl.overlay.removeEventListener('click', handler);
-      this.menuListEl.addEventListener('transitionend', transitionEnd);
-
-      requestAnimationFrame(() => this.menuListEl.classList.remove('open'));
-    };
-
-    return handler;
+  disconnectedCallback() {
+    if (this.open) {
+      this.dismissMenu(true);
+    }
   }
 
   private openMenu() {
@@ -78,8 +62,9 @@ export class Menu<T = string> extends LitElement {
     // 7. Assign a dismiss handler.
     // When dismissing, exact reverse sequence must be followed.
 
-    const dismissHandler = this.createDismissHandler();
+    this.overlayHandler = this.createDismissHandler();
 
+    this.open = true;
     this.surfaceCtrl.show();
 
     requestAnimationFrame(() => {
@@ -97,9 +82,47 @@ export class Menu<T = string> extends LitElement {
 
       requestAnimationFrame(() => {
         this.menuListEl.classList.add('open');
-        this.surfaceCtrl.overlay.addEventListener('click', dismissHandler);
+        this.surfaceCtrl.overlay.addEventListener('click', this.overlayHandler);
       });
     });
+  }
+
+  private dismissMenu(immediate: boolean) {
+
+    // Follow exact reverse steps.
+    // Additionally need transition event handler for smooth transition.
+    // 1. Remove dismiss handler.
+    // 2. Remove transition class.
+    // 3. After transition is complete, remove the surface from document.body.
+
+    if (immediate) {
+      this.clearSurface();
+    } else {
+      const transitionEndHandler = (e: TransitionEvent) => {
+        if (e.propertyName === 'transform') {
+          this.menuListEl.removeEventListener('transitionend', transitionEndHandler);
+          this.clearSurface();
+        }
+      };
+      this.menuListEl.addEventListener('transitionend', transitionEndHandler);
+    }
+
+    this.surfaceCtrl.overlay.removeEventListener('click', this.overlayHandler);
+    this.open = false;
+    requestAnimationFrame(() => this.menuListEl.classList.remove('open'));
+  }
+
+  private clearSurface() {
+    this.surfaceCtrl.dismiss();
+    this.overlayHandler = undefined;
+  }
+
+  private createDismissHandler() {
+    const handler = () => {
+      this.dismissMenu(false);
+    };
+
+    return handler;
   }
 
   render() {
