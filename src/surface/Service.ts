@@ -3,6 +3,7 @@ import { Overlay } from './Overlay';
 
 export interface SurfaceCtrl {
   overlay: Overlay;
+  backdrop: HTMLElement;
   show: () => void;
   dismiss: () => void;
   children: (nodes: HTMLElement[]) => void;
@@ -15,10 +16,12 @@ export function create() {
 
   const surface = new Surface();
 
+  // Force the rendering
   surface.overlay.layout();
 
   const control: SurfaceCtrl = {
     overlay: surface.overlay,
+    backdrop: surface.overlay.shadowRoot!.querySelector('.backdrop') as any,
     show, dismiss, children };
 
   function show() {
