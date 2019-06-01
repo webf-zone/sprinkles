@@ -1,4 +1,7 @@
 import { LitElement, html, property, TemplateResult, unsafeCSS } from 'lit-element';
+import { render } from 'lit-html';
+
+import style from './MenuList.scss';
 
 /**
  * @export
@@ -7,22 +10,21 @@ import { LitElement, html, property, TemplateResult, unsafeCSS } from 'lit-eleme
  */
 export class MenuList<T = any> extends LitElement {
 
+  static styles = [unsafeCSS(style)];
+
   @property()
   renderer: ((item: T) => TemplateResult) = (item) => html`${item}`;
 
-  @property()
-  items: T[] = [];
+  set items(items: T[] | undefined) {
 
-  protected createRenderRoot() {
-    return this;
+    const results = (items || []).map((x) => html`
+      <wf-menu-item>${this.renderer(x)}</wf-menu-item>`);
+
+    render(html`${results}`, this);
   }
 
   render() {
-
-    const items = this.items.map((x) => html`
-      <wf-menu-item>${this.renderer(x)}</wf-menu-item>`);
-
-    return html`${items}`;
+    return html`<slot></slot>`;
   }
 
 }
