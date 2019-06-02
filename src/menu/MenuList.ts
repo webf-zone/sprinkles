@@ -2,6 +2,7 @@ import { LitElement, html, property, TemplateResult, unsafeCSS } from 'lit-eleme
 import { render } from 'lit-html';
 
 import style from './MenuList.scss';
+import style2 from './MenuItem.scss';
 
 /**
  * @export
@@ -31,7 +32,9 @@ export class MenuList<T = any> extends LitElement {
 
 export class MenuItem extends LitElement {
 
-  static styles = [];
+  static styles = [
+    unsafeCSS(style2)
+  ];
 
   render() {
     return html`<slot></slot>`;

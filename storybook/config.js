@@ -4,6 +4,8 @@ import * as WF from '../src/main';
 // This is a global stylesheet
 import '!style-loader!css-loader!sass-loader!../src/style.g.scss';
 
+import './example.css';
+
 import { configure } from '@storybook/html';
 
 function loadStories() {
