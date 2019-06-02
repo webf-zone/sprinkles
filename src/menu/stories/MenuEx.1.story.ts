@@ -1,5 +1,6 @@
 import { component } from 'haunted';
 import { html } from 'lit-element';
+import { MENU_DIVIDER } from '../MenuList';
 
 
 export const MenuDemo: any = component(function MenuDemo(this: HTMLElement) {
@@ -9,11 +10,12 @@ export const MenuDemo: any = component(function MenuDemo(this: HTMLElement) {
     { label: 'Orange' },
     { label: 'Guava' },
     { label: 'Apple' },
+    MENU_DIVIDER,
     { label: 'Mango' },
     { label: 'Papaya' },
   ];
 
-  function renderer(item: typeof items[0]) {
+  function renderer(item: any) {
     return html`
       <div>${ item.label }</div>
     `;

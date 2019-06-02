@@ -81,7 +81,7 @@ export class Menu<T = string> extends LitElement {
       this.inlineStyle = styles;
 
       requestAnimationFrame(() => {
-        this.menuListEl.classList.add('open');
+        this.menuListEl.openList();
         this.surfaceCtrl.backdrop.addEventListener('click', this.overlayHandler);
       });
     });
@@ -109,7 +109,7 @@ export class Menu<T = string> extends LitElement {
 
     this.surfaceCtrl.backdrop.removeEventListener('click', this.overlayHandler);
     this.open = false;
-    requestAnimationFrame(() => this.menuListEl.classList.remove('open'));
+    requestAnimationFrame(() => this.menuListEl.dismissList());
   }
 
   private clearSurface() {
