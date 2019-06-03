@@ -1,5 +1,3 @@
-import Popper from 'popper.js';
-
 import { Overlay } from './Overlay';
 import { setChildren } from './helper';
 
