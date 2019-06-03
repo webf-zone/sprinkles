@@ -12,7 +12,8 @@ export const MenuDemo: any = component(function MenuDemo(this: HTMLElement) {
     { label: 'Apple' },
     MENU_DIVIDER,
     { label: 'Mango' },
-    { label: 'Papaya' },
+    { label: 'Papaya', disabled: true },
+    { label: 'Watermelon' }
   ];
 
   function renderer(item: any) {
@@ -25,6 +26,7 @@ export const MenuDemo: any = component(function MenuDemo(this: HTMLElement) {
     <wf-menu .renderer=${renderer} .items=${items}>
       <button>Open Menu</button>
     </wf-menu>
+    <p>Selected item: </p>
   `;
 
 });

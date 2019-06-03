@@ -8,12 +8,16 @@ export const MENU_DIVIDER = Symbol();
 
 export type Divider = typeof MENU_DIVIDER;
 
+export interface MenuListItem {
+  disabled?: boolean;
+}
+
 /**
  * @export
  * @class Menu
  * @extends {LitElement}
  */
-export class MenuList<T = any> extends LitElement {
+export class MenuList<T extends MenuListItem> extends LitElement {
 
   static styles = [unsafeCSS(style)];
 
@@ -24,41 +28,41 @@ export class MenuList<T = any> extends LitElement {
   private currentFocus: number = -1;
 
   @property()
-  public items?: Array<(T | Divider)> = [];
+  public items: Array<(T | Divider)> = [];
 
+  @property()
   private open: boolean = false;
 
   constructor() {
     super();
-
-    this.tabIndex = -1;
   }
 
   public openList() {
     this.open = true;
     this.classList.add('open');
-    this.tabIndex = 0;
-    this.currentFocus = 0;
+
+    this.currentFocus = this.findNextItemToFocus(0);
   }
 
   public dismissList() {
     this.open = false;
     this.classList.remove('open');
-    this.tabIndex = -1;
     this.currentFocus = -1;
   }
 
   private renderLightDOM() {
-    const results = (this.items || []).map((x, i) => this.renderItem(x, i));
+    const results = this.items.map((x, i) => this.renderItem(x, i));
 
-    render(html`${results}`, this);
+    render(html`${results}`, this, { eventContext: this });
   }
 
   private renderItem(x: T | Divider, index: number) {
     return x === MENU_DIVIDER
       ? html`<wf-menu-item class='divider'></wf-menu-item>`
       : html`
-          <wf-menu-item .tabIndex=${this.currentFocus === index ? 0 : -1 }>
+          <wf-menu-item ?disabled=${x.disabled} .tabIndex=${this.currentFocus === index ? 0 : -1 }
+            @click=${() => this.onSelect(x)}
+            @keydown=${(e: KeyboardEvent) => this.onKeydown(e, x)}>
             ${this.renderer(x)}
           </wf-menu-item>
         `;
@@ -70,6 +74,74 @@ export class MenuList<T = any> extends LitElement {
     this.renderLightDOM();
 
     return html`<slot></slot>`;
+  }
+
+  updated() {
+    this.focusMenuItem(this.currentFocus);
+  }
+
+  private onKeydown(e: KeyboardEvent, x: T) {
+    if (e.key === 'ArrowDown') {
+      this.currentFocus = this.findNextItemToFocus(this.currentFocus + 1);
+    } else if (e.key === 'ArrowUp') {
+      this.currentFocus = this.findPreviousItemToFocus(this.currentFocus - 1);
+    }
+  }
+
+  private onSelect(x: T) {
+    // Do not raise the event if disabled is set to true
+    if (x.disabled !== false) {
+    }
+  }
+
+  private focusMenuItem(currentFocus: number) {
+    const menuItems = this.querySelectorAll('wf-menu-item') as any as MenuItem[];
+
+    if (menuItems[currentFocus]) {
+      menuItems[currentFocus].focus();
+    }
+  }
+
+  private findPreviousItemToFocus(seedIndex: number): number {
+
+    for (let i = seedIndex; i >= 0; i--) {
+      const x = this.items[i];
+
+      if (x !== MENU_DIVIDER && x.disabled !== true) {
+        return i;
+      }
+    }
+
+    for (let i = this.items.length - 1; i > seedIndex; i--) {
+      const x = this.items[i];
+
+      if (x !== MENU_DIVIDER && x.disabled !== true) {
+        return i;
+      }
+    }
+
+    return -1;
+  }
+
+  private findNextItemToFocus(seedIndex: number): number {
+
+    for (let i = seedIndex; i < this.items.length; i++) {
+      const x = this.items[i];
+
+      if (x !== MENU_DIVIDER && x.disabled !== true) {
+        return i;
+      }
+    }
+
+    for (let i = 0; i < seedIndex; i++) {
+      const x = this.items[i];
+
+      if (x !== MENU_DIVIDER && x.disabled !== true) {
+        return i;
+      }
+    }
+
+    return -1;
   }
 
 }
