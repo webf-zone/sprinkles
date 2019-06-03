@@ -45,16 +45,14 @@ export class Menu<T = string> extends LitElement {
 
     this.menuListEl.addEventListener('select', (e: any) => {
       emit(this, 'select', e.detail);
-      this.open && this.dismissMenu(false);
+      this.requestDismiss(false);
     });
 
-    this.menuListEl.addEventListener('dismiss', () => this.open && this.dismissMenu(true));
+    this.menuListEl.addEventListener('dismiss', () => this.requestDismiss(true));
   }
 
   disconnectedCallback() {
-    if (this.open) {
-      this.dismissMenu(true);
-    }
+    this.requestDismiss(true);
   }
 
   private openMenu() {
@@ -94,6 +92,12 @@ export class Menu<T = string> extends LitElement {
     });
   }
 
+  private requestDismiss(immediate: boolean) {
+    if (this.open) {
+      this.dismissMenu(immediate);
+    }
+  }
+
   private dismissMenu(immediate: boolean) {
 
     // Follow exact reverse steps.
@@ -126,7 +130,7 @@ export class Menu<T = string> extends LitElement {
 
   private createDismissHandler() {
     const handler = () => {
-      this.dismissMenu(false);
+      this.requestDismiss(false);
     };
 
     return handler;

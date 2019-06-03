@@ -45,6 +45,13 @@ export class MenuList<T extends MenuListItem> extends LitElement {
         emit(this, 'dismiss');
       }
     });
+
+    this.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        emit(this, 'dismiss');
+      }
+    });
+
   }
 
   public openList() {
