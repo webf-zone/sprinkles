@@ -25,4 +25,6 @@
 :host([disabled]) {
   pointer-events: none;
   color: #888888;
+
+  user-select: none;
 }

@@ -1,8 +1,10 @@
 import { LitElement, html, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { render } from 'lit-html';
+import { ifDefined } from 'lit-html/directives/if-defined';
 
+import { emit } from '../util';
+import { MenuItem } from './MenuItem';
 import style from './MenuList.scss';
-import style2 from './MenuItem.scss';
 
 export const MENU_DIVIDER = Symbol();
 
@@ -57,19 +59,25 @@ export class MenuList<T extends MenuListItem> extends LitElement {
   }
 
   private renderItem(x: T | Divider, index: number) {
-    return x === MENU_DIVIDER
-      ? html`<wf-menu-item class='divider'></wf-menu-item>`
-      : html`
-          <wf-menu-item ?disabled=${x.disabled} .tabIndex=${this.currentFocus === index ? 0 : -1 }
-            @click=${() => this.onSelect(x)}
-            @keydown=${(e: KeyboardEvent) => this.onKeydown(e, x)}>
-            ${this.renderer(x)}
-          </wf-menu-item>
-        `;
+
+    if (x === MENU_DIVIDER) {
+      return html`<wf-menu-item class='divider'></wf-menu-item>`;
+    } else {
+      const tabIndex = x.disabled ? undefined : this.currentFocus === index ? 0 : -1;
+
+      return html`
+        <wf-menu-item ?disabled=${x.disabled}
+          .tabIndex=${ifDefined(tabIndex)}
+          @select=${() => this.onSelect(x)}
+          @keydown=${(e: KeyboardEvent) => this.onKeydown(e, x)}>
+          ${this.renderer(x)}
+        </wf-menu-item>`;
+    }
   }
 
   render() {
 
+    // This is a bit hacky part
     // First update the lightDOM
     this.renderLightDOM();
 
@@ -91,6 +99,10 @@ export class MenuList<T extends MenuListItem> extends LitElement {
   private onSelect(x: T) {
     // Do not raise the event if disabled is set to true
     if (x.disabled !== false) {
+      const index = this.items.indexOf(x);
+
+      this.currentFocus = index;
+      emit(this, 'select', x);
     }
   }
 
@@ -144,15 +156,4 @@ export class MenuList<T extends MenuListItem> extends LitElement {
     return -1;
   }
 
-}
-
-export class MenuItem extends LitElement {
-
-  static styles = [
-    unsafeCSS(style2)
-  ];
-
-  render() {
-    return html`<slot></slot>`;
-  }
 }

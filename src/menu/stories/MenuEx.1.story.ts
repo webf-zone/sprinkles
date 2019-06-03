@@ -22,8 +22,12 @@ export const MenuDemo: any = component(function MenuDemo(this: HTMLElement) {
     `;
   }
 
+  function onSelect(e: any) {
+    console.log('Select', e);
+  }
+
   return html`
-    <wf-menu .renderer=${renderer} .items=${items}>
+    <wf-menu @select=${onSelect} .renderer=${renderer} .items=${items}>
       <button>Open Menu</button>
     </wf-menu>
     <p>Selected item: </p>

@@ -1,6 +1,7 @@
-export function emit<T>(element: HTMLElement, name: string, data?: T) {
+export function emit<T>(element: HTMLElement, name: string, data?: T, opts: CustomEventInit = {}) {
 
   const event = new CustomEvent(name, {
+    ...opts,
     detail: data
   });
 

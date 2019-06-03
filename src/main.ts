@@ -2,7 +2,8 @@ import { CSSResult } from 'lit-element';
 
 import { Banner } from './banner/banner';
 import { Menu } from './menu/Menu';
-import { MenuList, MenuItem } from './menu/MenuList';
+import { MenuList } from './menu/MenuList';
+import { MenuItem } from './menu/MenuItem';
 import { MultiSelect } from './multiselect/multiselect';
 import { Overlay } from './surface/Overlay';
 

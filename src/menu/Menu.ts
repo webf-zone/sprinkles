@@ -2,9 +2,9 @@ import { LitElement, html, property, TemplateResult, unsafeCSS } from 'lit-eleme
 import { create, SurfaceCtrl } from '../surface/Service';
 import { MenuList } from './MenuList';
 import { suggest, getFixedPixels, MenuPosition } from './MenuPosition';
+import { applyStyle, emit } from '../util';
 
 import style from './Menu.scss';
-import { applyStyle } from '../util';
 
 const transform: { [key in MenuPosition]: Partial<CSSStyleDeclaration>; } = {
   'top-left': { transformOrigin: 'top left' },
@@ -42,6 +42,10 @@ export class Menu<T = string> extends LitElement {
     super();
 
     this.surfaceCtrl.children([this.menuListEl]);
+
+    this.menuListEl.addEventListener('select', (e: any) => {
+      emit(this, 'select', e.detail);
+    });
   }
 
   disconnectedCallback() {
