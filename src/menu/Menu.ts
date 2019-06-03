@@ -45,7 +45,10 @@ export class Menu<T = string> extends LitElement {
 
     this.menuListEl.addEventListener('select', (e: any) => {
       emit(this, 'select', e.detail);
+      this.open && this.dismissMenu(false);
     });
+
+    this.menuListEl.addEventListener('dismiss', () => this.open && this.dismissMenu(true));
   }
 
   disconnectedCallback() {

@@ -15,12 +15,10 @@ export class MenuItem extends LitElement {
     super();
 
     // Use user uses mouse to select item
-    this.addEventListener('click', (e) => {
-      emit(this, 'select');
-    });
+    this.addEventListener('click', (e) => emit(this, 'select'));
 
     // Use user uses keyboard to select item
-    this.addEventListener('keyup', (e) => {
+    this.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         emit(this, 'select');
       }

@@ -1,9 +1,11 @@
-import { component } from 'haunted';
+import { component, useState } from 'haunted';
 import { html } from 'lit-element';
 import { MENU_DIVIDER } from '../MenuList';
 
 
 export const MenuDemo: any = component(function MenuDemo(this: HTMLElement) {
+
+  const [selected, setSelected] = useState();
 
   const items = [
     { label: 'Passionfruit' },
@@ -23,14 +25,14 @@ export const MenuDemo: any = component(function MenuDemo(this: HTMLElement) {
   }
 
   function onSelect(e: any) {
-    console.log('Select', e);
+    setSelected(e.detail.label);
   }
 
   return html`
     <wf-menu @select=${onSelect} .renderer=${renderer} .items=${items}>
       <button>Open Menu</button>
     </wf-menu>
-    <p>Selected item: </p>
+    <p>Selected item: ${selected}</p>
   `;
 
 });

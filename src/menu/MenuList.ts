@@ -37,6 +37,14 @@ export class MenuList<T extends MenuListItem> extends LitElement {
 
   constructor() {
     super();
+
+    this.addEventListener('focusout', (e: any) => {
+      const event = e as FocusEvent;
+
+      if (event.relatedTarget instanceof MenuItem === false) {
+        emit(this, 'dismiss');
+      }
+    });
   }
 
   public openList() {
