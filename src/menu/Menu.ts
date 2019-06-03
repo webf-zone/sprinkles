@@ -29,6 +29,7 @@ export class Menu<T = string> extends LitElement {
 
   private open: boolean = false;
   private overlayHandler?: any;
+  private dismissInProgress: boolean = false;
 
   set items(items: T[]) {
     this.menuListEl.items = items;
@@ -93,8 +94,11 @@ export class Menu<T = string> extends LitElement {
   }
 
   private requestDismiss(immediate: boolean) {
-    if (this.open) {
+    // TODO: This needs work
+    if (!this.dismissInProgress && this.open) {
+      this.dismissInProgress = true;
       this.dismissMenu(immediate);
+      this.dismissInProgress = false;
     }
   }
 
