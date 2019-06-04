@@ -69,23 +69,24 @@ export class Menu<T = string> extends LitElement {
     // When dismissing, exact reverse sequence must be followed.
 
     this.overlayHandler = this.createDismissHandler();
-
     this.open = true;
     this.surfaceCtrl.show();
 
+    // These functions will force layout thrashing
+    const suggestion = suggest(this, this.menuListEl);
+    const position = getFixedPixels(this, suggestion);
+
+    const styles = {
+      ...position,
+      ...transform[suggestion],
+      minWidth: `${Math.max(this.offsetWidth, 112)}px`
+    } as any;
+
+    applyStyle(this.menuListEl, styles, this.inlineStyle);
+
+    this.inlineStyle = styles;
+
     requestAnimationFrame(() => {
-      const suggestion = suggest(this, this.menuListEl);
-      const position = getFixedPixels(this, suggestion);
-
-      const styles = {
-        ...position,
-        ...transform[suggestion]
-      } as any;
-
-      applyStyle(this.menuListEl, styles, this.inlineStyle);
-
-      this.inlineStyle = styles;
-
       requestAnimationFrame(() => {
         this.menuListEl.openList();
         this.surfaceCtrl.backdrop.addEventListener('click', this.overlayHandler);
@@ -94,7 +95,9 @@ export class Menu<T = string> extends LitElement {
   }
 
   private requestDismiss(immediate: boolean) {
-    // Simulate queue like effect
+    // Simulate queue like effect.
+    // Chromium browsers synchronously fire focusout/blur events.
+    // Thus we need a synchronization mechanism.
     if (this.open && this.dissmissFrame === 0) {
       this.dissmissFrame = requestAnimationFrame(() => this.dismissMenu(immediate));
     }
