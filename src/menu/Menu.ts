@@ -1,4 +1,4 @@
-import { LitElement, html, property, TemplateResult, unsafeCSS } from 'lit-element';
+import { LitElement, html, TemplateResult, unsafeCSS } from 'lit-element';
 import { create, SurfaceCtrl } from '../surface/Service';
 import { MenuList } from './MenuList';
 import { suggest, getFixedPixels, MenuPosition } from './MenuPosition';
@@ -29,7 +29,7 @@ export class Menu<T = string> extends LitElement {
 
   private open: boolean = false;
   private overlayHandler?: any;
-  private dismissInProgress: boolean = false;
+  private dissmissFrame: number = 0;
 
   set items(items: T[]) {
     this.menuListEl.items = items;
@@ -94,11 +94,9 @@ export class Menu<T = string> extends LitElement {
   }
 
   private requestDismiss(immediate: boolean) {
-    // TODO: This needs work
-    if (!this.dismissInProgress && this.open) {
-      this.dismissInProgress = true;
-      this.dismissMenu(immediate);
-      this.dismissInProgress = false;
+    // Simulate queue like effect
+    if (this.open && this.dissmissFrame === 0) {
+      this.dissmissFrame = requestAnimationFrame(() => this.dismissMenu(immediate));
     }
   }
 
@@ -124,6 +122,7 @@ export class Menu<T = string> extends LitElement {
 
     this.surfaceCtrl.backdrop.removeEventListener('click', this.overlayHandler);
     this.open = false;
+    this.dissmissFrame = 0;
     requestAnimationFrame(() => this.menuListEl.dismissList());
   }
 
