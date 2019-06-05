@@ -3,7 +3,7 @@ import { html } from 'lit-element';
 import { MENU_DIVIDER } from '../MenuList';
 
 
-export const MenuDemo: any = component(function MenuDemo(this: HTMLElement) {
+export const MenuDemo1: any = component(function MenuDemo(this: HTMLElement) {
 
   const [selected, setSelected] = useState();
 
@@ -37,4 +37,4 @@ export const MenuDemo: any = component(function MenuDemo(this: HTMLElement) {
 
 });
 
-customElements.define('wf-menu-demo-1', MenuDemo);
+customElements.define('wf-menu-demo-1', MenuDemo1);

@@ -52,7 +52,7 @@ export function getFixedPixels(anchor: HTMLElement, position: MenuPosition) {
       const bottomVal = vHeight - bottom;
       const maxHeight = `${bottom - 32}px`;
 
-      return { bottom: `${bottomVal}`, left: `${left}px`, maxHeight };
+      return { bottom: `${bottomVal}px`, left: `${left}px`, maxHeight };
     }
 
     case 'bottom-right': {

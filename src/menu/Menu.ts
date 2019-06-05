@@ -95,7 +95,7 @@ export class Menu<T = string> extends LitElement {
     const menuStyler = styler(this.menuListEl);
 
     const action = tween({
-      duration: 150,
+      duration: 160,
       ease: easing.easeOut,
       from: {
         opacity: 0,
@@ -143,7 +143,7 @@ export class Menu<T = string> extends LitElement {
       const menuStyler = styler(this.menuListEl);
 
       const action = tween({
-        duration: 200,
+        duration: 160,
         ease: easing.easeOut,
         from: {
           opacity: 1,

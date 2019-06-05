@@ -89,8 +89,10 @@ export class MenuList<T extends MenuListItem> extends LitElement {
   private onKeydown(e: KeyboardEvent, x: T) {
     if (e.key === 'ArrowDown') {
       this.currentFocus = this.findNextItemToFocus(this.currentFocus + 1);
+      e.preventDefault();
     } else if (e.key === 'ArrowUp') {
       this.currentFocus = this.findPreviousItemToFocus(this.currentFocus - 1);
+      e.preventDefault();
     }
   }
 
