@@ -13,26 +13,12 @@
 
   overflow-y: auto;
 
-  transform: scale(0.1);
-
-  transition:
-    opacity 0.06s linear,
-    transform 0.12s cubic-bezier(0, 0, 0.2, 1);
-
   @include mdc-elevation(1);
 
   background-color: var(--background);
 }
 
 :host(.open) {
-  transition:
-    opacity 0.03s linear,
-    transform 0.12s cubic-bezier(0, 0, 0.2, 1);
-
   opacity: 1;
   transform: scale(1);
-}
-
-:host(:focus) {
-  // outline: none;
 }

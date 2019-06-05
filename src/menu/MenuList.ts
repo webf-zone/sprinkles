@@ -38,16 +38,8 @@ export class MenuList<T extends MenuListItem> extends LitElement {
   constructor() {
     super();
 
-    this.addEventListener('focusout', (e: any) => {
-      const event = e as FocusEvent;
-
-      if (event.relatedTarget instanceof MenuItem === false) {
-        emit(this, 'dismiss');
-      }
-    });
-
     this.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' || e.key === 'Tab') {
         emit(this, 'dismiss');
       }
     });

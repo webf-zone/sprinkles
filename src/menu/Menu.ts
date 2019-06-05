@@ -1,4 +1,6 @@
 import { LitElement, html, TemplateResult, unsafeCSS } from 'lit-element';
+import { styler, tween, easing } from 'popmotion';
+
 import { create, SurfaceCtrl } from '../surface/Service';
 import { MenuList } from './MenuList';
 import { suggest, getFixedPixels, MenuPosition } from './MenuPosition';
@@ -86,11 +88,30 @@ export class Menu<T = string> extends LitElement {
 
     this.inlineStyle = styles;
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        this.menuListEl.openList();
+    const menuStyler = styler(this.menuListEl);
+
+    const action = tween({
+      duration: 150,
+      ease: easing.easeOut,
+      from: {
+        opacity: 0,
+        scaleX: 0,
+        scaleY: 0
+      },
+      to: {
+        opacity: 1,
+        scaleX: 1,
+        scaleY: 1
+      },
+    });
+
+    this.menuListEl.openList();
+
+    action.start({
+      update: (v: any) => menuStyler.set(v),
+      complete: () => {
         this.surfaceCtrl.backdrop.addEventListener('click', this.overlayHandler);
-      });
+      }
     });
   }
 
@@ -114,19 +135,36 @@ export class Menu<T = string> extends LitElement {
     if (immediate) {
       this.clearSurface();
     } else {
-      const transitionEndHandler = (e: TransitionEvent) => {
-        if (e.propertyName === 'transform') {
-          this.menuListEl.removeEventListener('transitionend', transitionEndHandler);
+
+      const menuStyler = styler(this.menuListEl);
+
+      const action = tween({
+        duration: 200,
+        ease: easing.easeOut,
+        from: {
+          opacity: 1,
+          scaleX: 1,
+          scaleY: 1
+        },
+        to: {
+          opacity: 0.2,
+          scaleX: 0,
+          scaleY: 0
+        },
+      });
+
+      action.start({
+        update: (v: any) => menuStyler.set(v),
+        complete: () => {
           this.clearSurface();
         }
-      };
-      this.menuListEl.addEventListener('transitionend', transitionEndHandler);
+      });
     }
 
     this.surfaceCtrl.backdrop.removeEventListener('click', this.overlayHandler);
     this.open = false;
     this.dissmissFrame = 0;
-    requestAnimationFrame(() => this.menuListEl.dismissList());
+    this.menuListEl.dismissList();
   }
 
   private clearSurface() {
