@@ -16,6 +16,7 @@
   @include mdc-elevation(1);
 
   background-color: var(--background);
+  pointer-events: all;
 }
 
 :host(.open) {

@@ -1,27 +1,35 @@
 
-export interface ScrollEventMgr {
+export interface EventMgr {
   on: (handler: (e: Event) => void) => void;
   off: () => void;
 }
 
-export function listenScroll(elm: HTMLElement | Document | Window = window): ScrollEventMgr {
+export function listenScroll(elm?: HTMLElement | Document | Window) {
+  return makeThrottler('scroll', elm);
+}
 
-  let ticking: boolean = false;
+export function listenResize() {
+  return makeThrottler('resize');
+}
+
+export function makeThrottler(eventName: string, elm: HTMLElement | Document | Window = window): EventMgr {
+
   let handler: undefined | ((e: Event) => void);
   let pendingWork: number = 0;
 
   const innerHandler = (e: Event) => {
 
-    if (!ticking && handler) {
+    if (handler) {
+
+      if (pendingWork !== 0) {
+        window.cancelAnimationFrame(pendingWork);
+      }
 
       // Throttle scroll event
       pendingWork = window.requestAnimationFrame(() => {
         handler!(e);
-        ticking = false;
         pendingWork = 0;
       });
-
-      ticking = true;
     }
   };
 
@@ -29,14 +37,14 @@ export function listenScroll(elm: HTMLElement | Document | Window = window): Scr
     // Only one event handler at a time.
     if (!handler) {
       handler = eventHandler;
-      elm.addEventListener('scroll', innerHandler);
+      elm.addEventListener(eventName, innerHandler);
     }
   };
 
   const off = () => {
     if (handler) {
       window.cancelAnimationFrame(pendingWork);
-      elm.removeEventListener('scroll', handler);
+      elm.removeEventListener(eventName, handler);
       handler = undefined;
     }
   }

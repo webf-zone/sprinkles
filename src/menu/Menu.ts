@@ -1,13 +1,13 @@
 import { LitElement, html, TemplateResult, unsafeCSS } from 'lit-element';
 import { styler, tween, easing } from 'popmotion';
 
+import { listenScroll, listenResize } from '../Event';
 import { create, SurfaceCtrl } from '../surface/Service';
-import { MenuList } from './MenuList';
-import { suggest, getFixedPixels, MenuPosition } from './MenuPosition';
 import { applyStyle, emit } from '../util';
 
+import { MenuList } from './MenuList';
+import { suggest, getFixedPixels, MenuPosition } from './MenuPosition';
 import style from './Menu.scss';
-import { listenScroll } from '../Event';
 
 const transform: { [key in MenuPosition]: Partial<CSSStyleDeclaration>; } = {
   'top-left': { transformOrigin: 'top left' },
@@ -35,6 +35,7 @@ export class Menu<T> extends LitElement {
   private dissmissFrame: number = 0;
 
   private scrollListener = listenScroll();
+  private resizeListener = listenResize();
 
   private menuStyler = styler(this.menuListEl);
 
@@ -107,7 +108,8 @@ export class Menu<T> extends LitElement {
       update: (v: any) => this.menuStyler.set(v),
       complete: () => {
         // Reapply position on scroll
-        // this.scrollListener.on(() => this.applyPosition());
+        this.scrollListener.on(() => this.requestDismiss(true));
+        this.resizeListener.on(() => this.requestDismiss(true));
         this.surfaceCtrl.backdrop.addEventListener('click', this.overlayHandler);
       }
     });
@@ -174,7 +176,8 @@ export class Menu<T> extends LitElement {
     }
 
     this.surfaceCtrl.backdrop.removeEventListener('click', this.overlayHandler);
-    // this.scrollListener.off();
+    this.scrollListener.off();
+    this.resizeListener.off();
 
     this.open = false;
     this.dissmissFrame = 0;
