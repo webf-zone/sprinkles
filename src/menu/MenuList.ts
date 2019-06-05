@@ -35,17 +35,6 @@ export class MenuList<T extends MenuListItem> extends LitElement {
   @property()
   private open: boolean = false;
 
-  constructor() {
-    super();
-
-    this.addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === 'Tab') {
-        emit(this, 'dismiss');
-      }
-    });
-
-  }
-
   public openList() {
     this.open = true;
     this.classList.add('open');
@@ -92,7 +81,9 @@ export class MenuList<T extends MenuListItem> extends LitElement {
   }
 
   updated() {
-    this.focusMenuItem(this.currentFocus);
+    if (this.open) {
+      this.focusMenuItem(this.currentFocus);
+    }
   }
 
   private onKeydown(e: KeyboardEvent, x: T) {

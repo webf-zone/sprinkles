@@ -51,7 +51,11 @@ export class Menu<T = string> extends LitElement {
       this.requestDismiss(false);
     });
 
-    this.menuListEl.addEventListener('dismiss', () => this.requestDismiss(true));
+    this.menuListEl.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Tab') {
+        this.requestDismiss(false);
+      }
+    });
   }
 
   disconnectedCallback() {
