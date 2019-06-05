@@ -7,6 +7,7 @@ import { suggest, getFixedPixels, MenuPosition } from './MenuPosition';
 import { applyStyle, emit } from '../util';
 
 import style from './Menu.scss';
+import { listenScroll } from '../Event';
 
 const transform: { [key in MenuPosition]: Partial<CSSStyleDeclaration>; } = {
   'top-left': { transformOrigin: 'top left' },
@@ -20,7 +21,7 @@ const transform: { [key in MenuPosition]: Partial<CSSStyleDeclaration>; } = {
  * @class Menu
  * @extends {LitElement}
  */
-export class Menu<T = string> extends LitElement {
+export class Menu<T> extends LitElement {
 
   static styles = [unsafeCSS(style)];
 
@@ -32,6 +33,10 @@ export class Menu<T = string> extends LitElement {
   private open: boolean = false;
   private overlayHandler?: any;
   private dissmissFrame: number = 0;
+
+  private scrollListener = listenScroll();
+
+  private menuStyler = styler(this.menuListEl);
 
   set items(items: T[]) {
     this.menuListEl.items = items;
@@ -78,21 +83,8 @@ export class Menu<T = string> extends LitElement {
     this.open = true;
     this.surfaceCtrl.show();
 
-    // These functions will force layout thrashing
-    const suggestion = suggest(this, this.menuListEl);
-    const position = getFixedPixels(this, suggestion);
-
-    const styles = {
-      ...position,
-      ...transform[suggestion],
-      minWidth: `${Math.max(this.offsetWidth, 112)}px`
-    } as any;
-
-    applyStyle(this.menuListEl, styles, this.inlineStyle);
-
-    this.inlineStyle = styles;
-
-    const menuStyler = styler(this.menuListEl);
+    // This will cause layout thrashing
+    this.applyPosition();
 
     const action = tween({
       duration: 160,
@@ -112,11 +104,29 @@ export class Menu<T = string> extends LitElement {
     this.menuListEl.openList();
 
     action.start({
-      update: (v: any) => menuStyler.set(v),
+      update: (v: any) => this.menuStyler.set(v),
       complete: () => {
+        // Reapply position on scroll
+        // this.scrollListener.on(() => this.applyPosition());
         this.surfaceCtrl.backdrop.addEventListener('click', this.overlayHandler);
       }
     });
+  }
+
+  private applyPosition() {
+    // These functions will force layout thrashing
+    const suggestion = suggest(this, this.menuListEl);
+    const position = getFixedPixels(this, suggestion);
+
+    const styles = {
+      ...position,
+      ...transform[suggestion],
+      minWidth: `${Math.max(this.offsetWidth, 112)}px`
+    } as any;
+
+    applyStyle(this.menuListEl, styles, this.inlineStyle);
+
+    this.inlineStyle = styles;
   }
 
   private requestDismiss(immediate: boolean) {
@@ -140,8 +150,6 @@ export class Menu<T = string> extends LitElement {
       this.clearSurface();
     } else {
 
-      const menuStyler = styler(this.menuListEl);
-
       const action = tween({
         duration: 160,
         ease: easing.easeOut,
@@ -158,7 +166,7 @@ export class Menu<T = string> extends LitElement {
       });
 
       action.start({
-        update: (v: any) => menuStyler.set(v),
+        update: (v: any) => this.menuStyler.set(v),
         complete: () => {
           this.clearSurface();
         }
@@ -166,6 +174,8 @@ export class Menu<T = string> extends LitElement {
     }
 
     this.surfaceCtrl.backdrop.removeEventListener('click', this.overlayHandler);
+    // this.scrollListener.off();
+
     this.open = false;
     this.dissmissFrame = 0;
     this.menuListEl.dismissList();

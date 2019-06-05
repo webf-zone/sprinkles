@@ -11,10 +11,12 @@ export class Overlay extends LitElement {
         left: 0;
         width: 100%;
         height: 100%;
+        pointer-events: none;
       }
 
       .backdrop {
-        background-color: rgba(0, 0, 0, 0.05);
+        pointer-events: all;
+        background-color: rgba(0, 0, 0, 0.02);
 
         position: absolute;
         top: 0;

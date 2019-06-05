@@ -32,6 +32,8 @@ export const MenuDemo2: any = component(function MenuDemo(this: HTMLElement) {
     <div class='demo'>
       <style>
         .demo {
+          /* overflow: scroll;
+          max-height: 600px; */
           max-width: 600px;
           margin: auto;
         }
