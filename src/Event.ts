@@ -1,6 +1,6 @@
 
-export interface EventMgr {
-  on: (handler: (e: Event) => void) => void;
+export interface EventSubscriber {
+  on: <T = Event>(handler: (e: T) => void) => void;
   off: () => void;
 }
 
@@ -12,7 +12,7 @@ export function listenResize() {
   return makeThrottler('resize');
 }
 
-export function makeThrottler(eventName: string, elm: HTMLElement | Document | Window = window): EventMgr {
+export function makeThrottler(eventName: string, elm: HTMLElement | Document | Window = window): EventSubscriber {
 
   let pendingWork: number = 0;
   const mgr = listen(eventName, elm);
@@ -45,7 +45,7 @@ export function makeThrottler(eventName: string, elm: HTMLElement | Document | W
   return { on, off };
 }
 
-export function listen(eventName: string, elm: HTMLElement | Document | Window = window): EventMgr {
+export function listen(eventName: string, elm: HTMLElement | Document | Window = window): EventSubscriber {
 
   let handler: undefined | ((e: Event) => void);
 

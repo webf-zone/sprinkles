@@ -1,7 +1,7 @@
 import { LitElement, html, TemplateResult, unsafeCSS } from 'lit-element';
 import { styler, tween, easing } from 'popmotion';
 
-import { listenScroll, listenResize } from '../Event';
+import { listenScroll, listenResize, listen } from '../Event';
 import { create, SurfaceCtrl } from '../surface/Service';
 import { applyStyle, emit } from '../util';
 
@@ -31,11 +31,13 @@ export class Menu<T> extends LitElement {
   private inlineStyle: Partial<CSSStyleDeclaration> = {};
 
   private open: boolean = false;
-  private overlayHandler?: any;
   private dissmissFrame: number = 0;
 
-  private scrollListener = listenScroll();
-  private resizeListener = listenResize();
+  private scrollSub = listenScroll();
+  private resizeSub = listenResize();
+  private selectSub = listen('select', this.menuListEl);
+  private keydownSub = listen('keydown', this.menuListEl);
+  private backdropSub = listen('click', this.surfaceCtrl.backdrop);
 
   private menuStyler = styler(this.menuListEl);
 
@@ -51,13 +53,17 @@ export class Menu<T> extends LitElement {
     super();
 
     this.surfaceCtrl.children([this.menuListEl]);
+  }
 
-    this.menuListEl.addEventListener('select', (e: any) => {
+  connectedCallback() {
+    super.connectedCallback();
+
+    this.selectSub.on((e: any) => {
       emit(this, 'select', e.detail);
       this.requestDismiss(false);
     });
 
-    this.menuListEl.addEventListener('keydown', (e: KeyboardEvent) => {
+    this.keydownSub.on((e: KeyboardEvent) => {
       if (e.key === 'Escape' || e.key === 'Tab') {
         this.requestDismiss(false);
       }
@@ -66,6 +72,9 @@ export class Menu<T> extends LitElement {
 
   disconnectedCallback() {
     this.requestDismiss(true);
+
+    this.selectSub.off();
+    this.keydownSub.off();
   }
 
   private openMenu() {
@@ -80,7 +89,6 @@ export class Menu<T> extends LitElement {
     // 7. Assign a dismiss handler.
     // When dismissing, exact reverse sequence must be followed.
 
-    this.overlayHandler = this.createDismissHandler();
     this.open = true;
     this.surfaceCtrl.show();
 
@@ -108,9 +116,9 @@ export class Menu<T> extends LitElement {
       update: (v: any) => this.menuStyler.set(v),
       complete: () => {
         // Reapply position on scroll
-        this.scrollListener.on(() => this.requestDismiss(true));
-        this.resizeListener.on(() => this.requestDismiss(true));
-        this.surfaceCtrl.backdrop.addEventListener('click', this.overlayHandler);
+        this.scrollSub.on(() => this.requestDismiss(true));
+        this.resizeSub.on(() => this.requestDismiss(true));
+        this.backdropSub.on(() => this.requestDismiss(false));
       }
     });
   }
@@ -149,9 +157,8 @@ export class Menu<T> extends LitElement {
     // 3. After transition is complete, remove the surface from document.body.
 
     if (immediate) {
-      this.clearSurface();
+      this.surfaceCtrl.dismiss();
     } else {
-
       const action = tween({
         duration: 160,
         ease: easing.easeOut,
@@ -170,31 +177,18 @@ export class Menu<T> extends LitElement {
       action.start({
         update: (v: any) => this.menuStyler.set(v),
         complete: () => {
-          this.clearSurface();
+          this.surfaceCtrl.dismiss();
         }
       });
     }
 
-    this.surfaceCtrl.backdrop.removeEventListener('click', this.overlayHandler);
-    this.scrollListener.off();
-    this.resizeListener.off();
+    this.backdropSub.off();
+    this.scrollSub.off();
+    this.resizeSub.off();
 
     this.open = false;
     this.dissmissFrame = 0;
     this.menuListEl.dismissList();
-  }
-
-  private clearSurface() {
-    this.surfaceCtrl.dismiss();
-    this.overlayHandler = undefined;
-  }
-
-  private createDismissHandler() {
-    const handler = () => {
-      this.requestDismiss(false);
-    };
-
-    return handler;
   }
 
   render() {
