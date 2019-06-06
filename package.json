@@ -12,7 +12,10 @@
     "type": "git",
     "url": "git+https://github.com/webf-zone/sprinkles.git"
   },
-  "keywords": [],
+  "keywords": [
+    "web-component",
+    "web-components"
+  ],
   "author": {
     "name": "Harshal Patil",
     "url": "https://blog.webf.zone"
