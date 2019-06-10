@@ -1,0 +1,37 @@
+@import '@material/button/mdc-button.scss';
+@import '@material/ripple/_mixins.scss';
+
+$color-free-speech-aquamarine: #0AAB8A;
+$color-white: #FFFFFF;
+$color-sprinkles: $color-free-speech-aquamarine;
+
+:host {
+  --radius: 4px;
+  --color: #{$color-sprinkles};
+  --ink: #{$color-white};
+
+  display: inline-flex;
+}
+
+.mdc-button {
+  font-family: inherit;
+
+  @include mdc-button-shape-radius(var(--radius), true);
+  @include mdc-button-ink-color(var(--color));
+
+  // It doesn't accept outline width as a variable
+  @include mdc-button-outline-width(2px, 0px);
+
+  // For ripple effect
+  @include mdc-states(#141414);
+
+  &--outlined {
+    @include mdc-button-outline-color(var(--color));
+  }
+
+  &--unelevated,
+  &--raised {
+      @include mdc-button-container-fill-color(var(--color));
+      @include mdc-button-ink-color(var(--ink));
+  }
+}

@@ -1,0 +1,84 @@
+import { MDCRipple } from '@material/ripple';
+import { LitElement, html, unsafeCSS, property } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map';
+
+import style from './Button.scss';
+
+export type ButtonType = 'submit' | 'button' | 'reset';
+export type ButtonVariant = 'text' | 'outlined' | 'unelevated' | 'raised';
+
+// Classes to be added
+const map: { [k in ButtonVariant]: string } = {
+  text: 'mdc-button',
+  outlined: 'mdc-button--outlined',
+  unelevated: 'mdc-button--unelevated',
+  raised: 'mdc-button--raised'
+};
+
+export class Button extends LitElement {
+
+  static styles = [unsafeCSS(style)];
+
+  @property({ reflect: true, type: String })
+  type: ButtonType = 'button';
+
+  @property({ reflect: true, type: String })
+  variant: ButtonVariant = 'text';
+
+  @property({ reflect: true, type: Boolean })
+  disabled: boolean = false;
+
+  private mdcRipple?: MDCRipple;
+
+  public get applicableClasses() {
+    return map[this.variant];
+  }
+
+  // protected createRenderRoot() {
+  //   return this.attachShadow({ mode: 'open', delegatesFocus: true });
+  // }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    const button = this.shadowRoot!.querySelector('button');
+
+    if (button && !this.mdcRipple) {
+      this.generateRipple();
+    }
+
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+
+    if (this.mdcRipple) {
+      this.mdcRipple.destroy();
+      this.mdcRipple = undefined;
+    }
+  }
+
+  private generateRipple() {
+    this.mdcRipple = new MDCRipple(this.shadowRoot!.querySelector('button')!);
+    this.mdcRipple.unbounded = false;
+  }
+
+  render() {
+
+    const classes = classMap({
+      'mdc-button': true,
+      [this.applicableClasses]: true
+    });
+
+    return html`
+      <button type=${this.type} class=${classes} ?disabled=${this.disabled}>
+        <slot></slot>
+      </button>
+    `;
+  }
+
+  firstUpdated() {
+    this.generateRipple();
+  }
+
+}
