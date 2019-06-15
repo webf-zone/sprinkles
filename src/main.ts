@@ -9,6 +9,10 @@ import { MenuItem } from './menu/MenuItem';
 import { MultiSelect } from './multiselect/multiselect';
 import { Overlay } from './surface/Overlay';
 
+// Re-exports
+export { html } from 'lit-element';
+export { MENU_DIVIDER } from './menu/MenuList';
+
 export function registerBanner(styles: CSSResult[]) {
   // LitElement is piggy backing on observedAttributes to generate CSS
   Banner.styles = Banner.styles.concat(styles);
