@@ -2,6 +2,7 @@ import { CSSResult } from 'lit-element';
 
 import { Banner } from './banner/banner';
 import { Button } from './button/Button';
+import { Ripple } from './effects/ripple/Ripple';
 import { Menu } from './menu/Menu';
 import { MenuList } from './menu/MenuList';
 import { MenuItem } from './menu/MenuItem';
@@ -31,4 +32,8 @@ export function registerMultiSelect() {
 
 export function registerSurface() {
   customElements.define('wf-overlay', Overlay);
+}
+
+export function registerSurfaceRipple() {
+  customElements.define('wf-surface-ripple', Ripple);
 }
