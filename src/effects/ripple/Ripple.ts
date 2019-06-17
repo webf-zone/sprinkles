@@ -1,5 +1,5 @@
 import { LitElement, html, unsafeCSS, property } from 'lit-element';
-import { tween, styler, easing } from 'popmotion';
+import { tween, styler, easing, ColdSubscription } from 'popmotion';
 
 import style from './Ripple.scss';
 
@@ -9,6 +9,8 @@ export class Ripple extends LitElement {
 
   @property({ type: Boolean, reflect: true })
   public disabled: boolean = false;
+
+  public anySubscription?: ColdSubscription;
 
   connectedCallback() {
     super.connectedCallback();
@@ -21,59 +23,75 @@ export class Ripple extends LitElement {
 
       const { left, top } = this.getBoundingClientRect();
 
-      const circle = this.shadowRoot!.querySelector('.circle')!;
-      const circleStyler = styler(circle);
-
-      // Width and Height of the surface
-      const width = this.offsetWidth;
-      const height = this.offsetHeight;
-
       // Distance of the event click from the surface's padding edge
       const evX = e.pageX - (left + window.scrollX);
       const evY = e.pageY - (top + window.scrollY);
 
-      // Distance of the event click from the center of the surface
-      const offsetX = Math.abs((width / 2) - evX);
-      const offsetY = Math.abs((height / 2) - evY);
-
-      // Calculate the distance of the furthest point
-      const deltaX = (width / 2) + offsetX;
-      const deltaY = (height / 2) + offsetY;
-
-      // Use pythagorous theorem to calcuate actual distance
-      const scaleRatio = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-
-      // console.log('Dimensions', width, height, 'Click', evX, evY, 'Distance', deltaX, deltaY, scaleRatio);
-
-      // Initiate an animation
-      const action = tween({
-        from: {
-          originX: 0.5,
-          originY: 0.5,
-          x: evX,
-          y: evY,
-          opacity: 1,
-          scale: 1,
-        },
-        to: {
-          x: evX,
-          y: evY,
-          originX: 0.5,
-          originY: 0.5,
-          scale: scaleRatio,
-          opacity: 0,
-        },
-        duration: 400,
-        ease: easing.easeOut
-      });
-
-      action.start({
-        update: (v: any) => {
-          circleStyler.set(v);
-        }
-      });
-
+      this.initiateRipple(evX, evY);
     });
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+
+    this.stopRipple();
+  }
+
+  initiateRipple(evX: number, evY: number) {
+    // (evX, evY): Distance of the event click from the surface's padding edge
+    // Only make sense in case of mouse event. For keyboard based events, it should be the center of the element.
+
+    const circle = this.shadowRoot!.querySelector('.circle')!;
+    const circleStyler = styler(circle);
+
+    // Width and Height of the surface
+    const width = this.offsetWidth;
+    const height = this.offsetHeight;
+
+    // Distance of the event click from the center of the surface
+    const offsetX = Math.abs((width / 2) - evX);
+    const offsetY = Math.abs((height / 2) - evY);
+
+    // Calculate the distance of the furthest point
+    const deltaX = (width / 2) + offsetX;
+    const deltaY = (height / 2) + offsetY;
+
+    // Use pythagorous theorem to calcuate actual distance
+    const scaleRatio = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+    // console.log('Dimensions', width, height, 'Click', evX, evY, 'Distance', deltaX, deltaY, scaleRatio);
+
+    // Initiate an animation
+    const action = tween({
+      from: {
+        originX: 0.5,
+        originY: 0.5,
+        x: evX,
+        y: evY,
+        opacity: 1,
+        scale: 1,
+      },
+      to: {
+        x: evX,
+        y: evY,
+        originX: 0.5,
+        originY: 0.5,
+        scale: scaleRatio,
+        opacity: 0,
+      },
+      duration: 400,
+      ease: easing.easeOut
+    });
+
+    this.anySubscription = action.start({
+      update: (v: any) => circleStyler.set(v),
+      complete: () => this.stopRipple()
+    });
+  }
+
+  stopRipple() {
+    this.anySubscription && this.anySubscription.stop();
+    this.anySubscription = undefined;
   }
 
   render() {
