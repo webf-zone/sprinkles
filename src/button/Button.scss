@@ -1,37 +1,57 @@
 @import '@material/button/mdc-button.scss';
-@import '@material/ripple/_mixins.scss';
+@import '@material/elevation/_mixins.scss';
 
 $color-free-speech-aquamarine: #0AAB8A;
 $color-white: #FFFFFF;
 $color-sprinkles: $color-free-speech-aquamarine;
 
 :host {
-  --radius: 4px;
-  --color: #{$color-sprinkles};
-  --ink: #{$color-white};
+  --button-outline-width: 2px;
+  --button-radius: 4px;
+  --button-color: #{$color-sprinkles};
+  --button-ink: #{$color-white};
 
   display: inline-flex;
+  border-radius: var(--button-radius);
+}
+
+wf-surface-ripple {
+  border-radius: var(--button-radius);
+}
+
+:host([variant='raised']) {
+  // Since surface has overflow: hidden, buttons shadow is actually clipped.
+  // Use parent element to set box shadow for raised elements.
+  @include mdc-elevation(1);
 }
 
 .mdc-button {
-  font-family: inherit;
 
-  @include mdc-button-shape-radius(var(--radius), true);
-  @include mdc-button-ink-color(var(--color));
+  @include mdc-button-shape-radius(var(--button-radius), true);
+  @include mdc-button-ink-color(var(--button-color));
 
   // It doesn't accept outline width as a variable
   @include mdc-button-outline-width(2px, 0px);
 
-  // For ripple effect
-  @include mdc-states(#141414);
+  // This is hacky code. Material doesn't recommend that we apply style like this.
+  &::before,
+  &::after {
+    background-color: var(--button-color);
+  }
 
   &--outlined {
-    @include mdc-button-outline-color(var(--color));
+    @include mdc-button-outline-color(var(--button-color));
   }
 
   &--unelevated,
   &--raised {
-      @include mdc-button-container-fill-color(var(--color));
-      @include mdc-button-ink-color(var(--ink));
+      @include mdc-button-container-fill-color(var(--button-color));
+      @include mdc-button-ink-color(var(--button-ink));
+
+      // This is hacky code. Material doesn't recommend that we apply style like this.
+      &::before,
+      &::after {
+        background-color: var(--button-ink);
+      }
   }
 }

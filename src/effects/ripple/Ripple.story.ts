@@ -8,12 +8,17 @@ export const RippleDemo: any = component(function RippleDemo(this: HTMLElement) 
 
   return html`
     <style>
-      wf-surface-ripple { margin: 8px; }
+      wf-surface-ripple {
+        margin: 8px;
+        padding: 16px;
+
+        background: #0AAB8A;
+      }
     </style>
     <div>
       <h2>Simple buttons - with ripple</h2>
       <wf-surface-ripple>
-        <wf-button .variant=${'unelevated'}>Open</wf-button>
+        <div>Any element can be wrapped in a surface</div>
       </wf-surface-ripple>
     </div>
   `;

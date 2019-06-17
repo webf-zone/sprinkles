@@ -7,10 +7,19 @@ export class Ripple extends LitElement {
 
   static styles = [unsafeCSS(style)];
 
+  @property({ type: Boolean, reflect: true })
+  public disabled: boolean = false;
+
   connectedCallback() {
     super.connectedCallback();
 
     this.addEventListener('click', (e: MouseEvent) => {
+
+      if (this.disabled) {
+        return;
+      }
+
+      const { left, top } = this.getBoundingClientRect();
 
       const circle = this.shadowRoot!.querySelector('.circle')!;
       const circleStyler = styler(circle);
@@ -19,9 +28,9 @@ export class Ripple extends LitElement {
       const width = this.offsetWidth;
       const height = this.offsetHeight;
 
-      // Distance of the event click from the target's padding edge
-      const evX = e.offsetX;
-      const evY = e.offsetY;
+      // Distance of the event click from the surface's padding edge
+      const evX = e.pageX - (left + window.scrollX);
+      const evY = e.pageY - (top + window.scrollY);
 
       // Distance of the event click from the center of the surface
       const offsetX = Math.abs((width / 2) - evX);
@@ -54,7 +63,7 @@ export class Ripple extends LitElement {
           scale: scaleRatio,
           opacity: 0,
         },
-        duration: 300,
+        duration: 400,
         ease: easing.easeOut
       });
 

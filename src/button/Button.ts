@@ -28,8 +28,6 @@ export class Button extends LitElement {
   @property({ reflect: true, type: Boolean })
   disabled: boolean = false;
 
-  private mdcRipple?: MDCRipple;
-
   public get applicableClasses() {
     return map[this.variant];
   }
@@ -40,27 +38,10 @@ export class Button extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-
-    const button = this.shadowRoot!.querySelector('button');
-
-    if (button && !this.mdcRipple) {
-      this.generateRipple();
-    }
-
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-
-    if (this.mdcRipple) {
-      this.mdcRipple.destroy();
-      this.mdcRipple = undefined;
-    }
-  }
-
-  private generateRipple() {
-    this.mdcRipple = new MDCRipple(this.shadowRoot!.querySelector('button')!);
-    this.mdcRipple.unbounded = false;
   }
 
   render() {
@@ -71,14 +52,12 @@ export class Button extends LitElement {
     });
 
     return html`
-      <button type=${this.type} class=${classes} ?disabled=${this.disabled}>
-        <slot></slot>
-      </button>
+      <wf-surface-ripple ?disabled=${this.disabled}>
+        <button type=${this.type} class=${classes} ?disabled=${this.disabled}>
+          <slot></slot>
+        </button>
+      </wf-surface-ripple>
     `;
-  }
-
-  firstUpdated() {
-    this.generateRipple();
   }
 
 }

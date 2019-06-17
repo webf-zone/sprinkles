@@ -1,7 +1,7 @@
 :host {
 
-  --color: #202020;
-  --accent: #444444;;
+  --ripple-color: #202020;
+  --ripple-accent: #444444;;
 
   display: inline-flex;
   position: relative;
@@ -31,9 +31,9 @@
   .stop-#{$i} {
 
     @if($i % 2 == 0) {
-      stop-color: var(--color);
+      stop-color: var(--ripple-color);
     } @else {
-      stop-color: var(--accent);
+      stop-color: var(--ripple-accent);
     }
   }
 }
