@@ -27,10 +27,10 @@ export class MenuList<T extends MenuListItem> extends LitElement {
   renderer: ((item: T) => TemplateResult) = (item) => html`${item}`;
 
   @property()
-  private currentFocus: number = -1;
+  items: Array<(T | Divider)> = [];
 
   @property()
-  public items: Array<(T | Divider)> = [];
+  private currentFocus: number = -1;
 
   @property()
   private open: boolean = false;
@@ -48,12 +48,6 @@ export class MenuList<T extends MenuListItem> extends LitElement {
     this.currentFocus = -1;
   }
 
-  private renderLightDOM() {
-    const results = this.items.map((x, i) => this.renderItem(x, i));
-
-    render(html`${results}`, this, { eventContext: this });
-  }
-
   private renderItem(x: T | Divider, index: number) {
 
     if (x === MENU_DIVIDER) {
@@ -69,6 +63,12 @@ export class MenuList<T extends MenuListItem> extends LitElement {
           ${this.renderer(x)}
         </wf-menu-item>`;
     }
+  }
+
+  private renderLightDOM() {
+    const results = this.items.map((x, i) => this.renderItem(x, i));
+
+    render(html`${results}`, this, { eventContext: this });
   }
 
   render() {
