@@ -26,7 +26,7 @@ To use menu, simply drop `<wf-button>` tag on the page. If you are using **LitEl
 
 ## Varients
 
-`<wf-button>` has many varients, such as **outlined** and **raised ** button. These varients can be accessed via `varient` property on the button.
+`<wf-button>` has many varients, such as **outlined** and **raised** button. These varients can be accessed via `varient` property on the button.
 
 ## Varient Example
 
