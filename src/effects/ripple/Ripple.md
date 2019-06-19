@@ -20,37 +20,15 @@ WF.registerSurfaceRipple();
 
 ## Basic Usage
 
-A ripple can be applied to a variety of elements to represent interactive surfaces. To use ripple effect on your component, simply put it in the `<wf-surface-ripple>` tag. If you are using **LitElement**, then you can simply use it as:
+A ripple can be applied to a variety of elements to represent interactive surfaces. To use ripple effect, simply wrap your **HTMLElement** in the `<wf-surface-ripple>` tag. For example:
 
 ```html
-<wf-surface-menu>
-  <!--component on which ripple effect needs to be applied -->
-  <button>Open Menu</button>
-</wf-surface-menu>
-```
-
-## Example
-
-```html
-import { html } from '@webf/sprinkles';
-
-  return html`
-    <style>
-      wf-surface-ripple {
-        margin: 8px;
-        padding: 16px;
-
-        background: #0AAB8A;
-      }
-    </style>
-    <div>
-      <h2>Simple buttons - with ripple</h2>
-      <wf-surface-ripple>
-        <div>Any element can be wrapped in a surface</div>
-      </wf-surface-ripple>
-    </div>
-  `;
+<wf-surface-ripple>
+  <!-- HTMLElement on which ripple effect needs to be applied -->
+  <a href='/settings'>SETTINGS</button>
+</wf-surface-ripple>
 ```
 
 ## TBD Features
-- Support for checkboxes and radio buttons.
+- Different types of triggers, click, keyboard, hover, etc.
+
