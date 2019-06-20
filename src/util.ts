@@ -18,3 +18,16 @@ export function applyStyle(elm: HTMLElement, style: Partial<CSSStyleDeclaration>
     elm.style[key as any] = value;
   }
 }
+
+export function promisor<T>(): [Promise<T>, (value?: T) => void, (reason?: any) => void] {
+
+  let resolver, rejector;
+
+  const promise = new Promise<T>((resolve, reject) => {
+    resolver = resolve;
+    rejector = reject;
+  });
+
+  return [promise, resolver as any, rejector as any];
+
+}

@@ -1,6 +1,8 @@
 :host {
   display: block;
   padding: 0.5rem 1rem;
+
+  transition: background-color 75ms ease-out;
 }
 
 :host(.divider) {
@@ -13,6 +15,11 @@
 }
 
 :host(:hover) {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+:host([highlight]) {
   cursor: pointer;
   background-color: rgba(0, 0, 0, 0.12);
 }

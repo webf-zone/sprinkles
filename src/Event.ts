@@ -1,7 +1,7 @@
 
 export interface EventSubscriber {
-  on: <T = Event>(handler: (e: T) => void) => void;
-  off: () => void;
+  on: <T = Event>(handler: (e: T) => void) => EventSubscriber;
+  off: () => EventSubscriber;
 }
 
 export function listenScroll(elm?: HTMLElement | Document | Window) {
@@ -35,14 +35,20 @@ export function makeThrottler(eventName: string, elm: HTMLElement | Document | W
 
   const on = (handler: (e: Event) => void) => {
     mgr.on(decorateHandler(handler));
+
+    return subscriber;
   };
 
   const off = () => {
     window.cancelAnimationFrame(pendingWork);
     mgr.off();
+
+    return subscriber;
   }
 
-  return { on, off };
+  const subscriber = { on, off };
+
+  return subscriber as any;
 }
 
 export function listen(eventName: string, elm: HTMLElement | Document | Window = window): EventSubscriber {
@@ -57,6 +63,8 @@ export function listen(eventName: string, elm: HTMLElement | Document | Window =
     } else {
       console.warn('Attempt to add multiple event handler');
     }
+
+    return subscriber;
   };
 
   const off = () => {
@@ -64,7 +72,10 @@ export function listen(eventName: string, elm: HTMLElement | Document | Window =
       elm.removeEventListener(eventName, handler);
       handler = undefined;
     }
+    return subscriber;
   }
 
-  return { on, off };
+  const subscriber = { on, off };
+
+  return subscriber as any;
 }

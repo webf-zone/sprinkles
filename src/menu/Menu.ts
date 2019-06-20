@@ -1,20 +1,11 @@
-import { LitElement, html, TemplateResult, unsafeCSS } from 'lit-element';
-import { styler, tween, easing } from 'popmotion';
+import { LitElement, html, unsafeCSS, property } from 'lit-element';
 
-import { listenScroll, listenResize, listen } from '../Event';
+import { listenScroll, listenResize, listen, EventSubscriber } from '../Event';
 import { create, SurfaceCtrl } from '../surface/Service';
-import { applyStyle, emit } from '../util';
 
 import { MenuList } from './MenuList';
-import { suggest, getFixedPixels, MenuPosition } from './MenuPosition';
 import style from './Menu.scss';
-
-const transform: { [key in MenuPosition]: Partial<CSSStyleDeclaration>; } = {
-  'top-left': { transformOrigin: 'top left' },
-  'top-right': { transformOrigin: 'top right' },
-  'bottom-left': { transformOrigin: 'bottom left' },
-  'bottom-right': { transformOrigin: 'bottom right' }
-};
+import { MenuListRenderer } from './MenuListRenderer';
 
 /**
  * @export
@@ -25,176 +16,209 @@ export class Menu<T> extends LitElement {
 
   static styles = [unsafeCSS(style)];
 
+  @property({ type: String, reflect: true })
+  public primary: string = '';
+
   private surfaceCtrl: SurfaceCtrl = create();
 
-  private menuListEl: MenuList<T> = new MenuList<T>();
-  private inlineStyle: Partial<CSSStyleDeclaration> = {};
+  private state: 'normal' | 'opening' | 'opened' | 'closing' | 'closed' = 'normal';
 
-  private open: boolean = false;
-  private dissmissFrame: number = 0;
-
+  // Global events
   private scrollSub = listenScroll();
   private resizeSub = listenResize();
-  private selectSub = listen('select', this.menuListEl);
-  private keydownSub = listen('keydown', this.menuListEl);
+
   private backdropSub = listen('click', this.surfaceCtrl.backdrop);
+  private keydownSub = listen('keydown', this.surfaceCtrl.overlay);
 
-  private menuStyler = styler(this.menuListEl);
-
-  set items(items: T[]) {
-    this.menuListEl.items = items;
-  }
-
-  set renderer(func: (item: T) => TemplateResult) {
-    this.menuListEl.renderer = func;
-  }
+  private renderTree: Array<{
+    item: MenuList<T>;
+    events: EventSubscriber[];
+    requester?: MenuListRenderer<T>;
+  }> = [];
 
   constructor() {
     super();
-
-    this.surfaceCtrl.children([this.menuListEl]);
   }
 
   connectedCallback() {
     super.connectedCallback();
 
-    this.selectSub.on((e: any) => {
-      emit(this, 'select', e.detail);
-      this.requestDismiss(false);
-    });
+    this.addEventListener('click', () => this.openMenu());
 
-    this.keydownSub.on((e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === 'Tab') {
-        this.requestDismiss(false);
-      }
-    });
+    // Listen for global events like scroll and resize
   }
 
   disconnectedCallback() {
-    this.requestDismiss(true);
-
-    this.selectSub.off();
-    this.keydownSub.off();
+    this.dismissMenu();
   }
 
-  private openMenu() {
+  private async drawList(listId: string, anchor: HTMLElement, requester?: MenuListRenderer<T>) {
 
-    // Steps to show dropdown menu:
-    // 1. Add the surface to document.body.
-    // 2. Show the surface so that dimensions of floating MenuListEl can be computed.
-    // 3. Generate a dropdown dismiss handler.
-    // 4. Calculate menu-transition direction and fixed position.
-    // 5. Apply those styles to the MenuListEl.
-    // 6. Add the transition class.
-    // 7. Assign a dismiss handler.
-    // When dismissing, exact reverse sequence must be followed.
+    const list = this.aquireListForId(listId);
 
-    this.open = true;
-    this.surfaceCtrl.show();
+    if (!list) {
+      throw new Error(`WF: List with id: ${listId} not found`);
+    } else if (this.isListAlreadyOpen(listId)) {
+      return;
+    }
 
-    // This will cause layout thrashing
-    this.applyPosition();
+    const listenSub = listen('select', list.listEl);
+    const openSub = listen('open', list.listEl);
+    const dismissCurrentSub = listen('dismissCurrent', list.listEl);
 
-    const action = tween({
-      duration: 160,
-      ease: easing.easeOut,
-      from: {
-        opacity: 0,
-        scaleX: 0,
-        scaleY: 0
-      },
-      to: {
-        opacity: 1,
-        scaleX: 1,
-        scaleY: 1
-      },
+    list.overlapping = this.renderTree.length === 0;
+
+    this.renderTree.push({
+      requester,
+      item: list,
+      events: [ listenSub, openSub, dismissCurrentSub ]
     });
 
-    this.menuListEl.openList();
+    const renderList = this.renderTree.map((x) => x.item.listEl);
+    this.surfaceCtrl.children(renderList);
 
-    action.start({
-      update: (v: any) => this.menuStyler.set(v),
-      complete: () => {
-        // Reapply position on scroll
-        this.scrollSub.on(() => this.requestDismiss(true));
-        this.resizeSub.on(() => this.requestDismiss(true));
-        this.backdropSub.on(() => this.requestDismiss(false));
+    await list.open(anchor);
+
+    listenSub.on(() => this.dismissMenu());
+
+    openSub.on((e: CustomEvent) => {
+      // Check if any other sub-list already opened from the requesting list
+      const siblingSublist = this.findSublistForRequester(e.target as any);
+
+      if (siblingSublist && siblingSublist.item.wfId === e.detail.listId) {
+        return;
+      }
+
+      // If yes, then dismiss that already opened list
+      if (siblingSublist) {
+        this.clearList(siblingSublist.item.wfId);
+      }
+
+      // If openSub has possible trigger action then draw that list
+      if (e.detail.listId) {
+        this.drawList(e.detail.listId, e.detail.anchor, e.target as any);
       }
     });
+
+    dismissCurrentSub.on((e: CustomEvent) => {
+
+      if (this.renderTree.length > 1) {
+        this.clearList(this.renderTree[this.renderTree.length - 1].item.wfId);
+      }
+    });
+
+    this.renderTree.forEach((x) => {
+      if (x.requester && x.item.anchor) {
+        (x.item.anchor as any).highlight = true;
+      }
+    });
+
+    this.focusRecentSubmenuItem();
   }
 
-  private applyPosition() {
-    // These functions will force layout thrashing
-    const suggestion = suggest(this, this.menuListEl);
-    const position = getFixedPixels(this, suggestion);
+  private async clearList(listId: string) {
 
-    const styles = {
-      ...position,
-      ...transform[suggestion],
-      minWidth: `${Math.max(this.offsetWidth, 112)}px`
-    } as any;
+    // During dismiss, we might have to dismiss certain items.
+    const listIndex = this.renderTree.findIndex((x) => x.item.wfId === listId);
 
-    applyStyle(this.menuListEl, styles, this.inlineStyle);
+    if (listIndex === -1) {
+      throw new Error(`WF: List with id: ${listId} could not be dismissed`);
+    }
 
-    this.inlineStyle = styles;
+    const removedListItems = this.renderTree.slice(listIndex);
+
+    this.renderTree = this.renderTree.slice(0, listIndex);
+
+    const renderList = this.renderTree.map((x) => x.item.listEl);
+    this.surfaceCtrl.children(renderList);
+
+    removedListItems.forEach(({ item, events }) => {
+      item.dismiss();
+
+      // Cleanup events
+      events.forEach((sub) => sub.off());
+    });
+
+    this.focusRecentSubmenuItem();
+
+    const recent = this.getRecentSubmenu();
+
+    if (recent) {
+      const items = recent.item.listEl.querySelectorAll('wf-menu-item');
+      items.forEach((x: any) => x.highlight = false);
+    }
+
   }
 
-  private requestDismiss(immediate: boolean) {
-    // Simulate queue like effect.
-    // Chromium browsers synchronously fire focusout/blur events.
-    // Thus we need a synchronization mechanism.
-    if (this.open && this.dissmissFrame === 0) {
-      this.dissmissFrame = requestAnimationFrame(() => this.dismissMenu(immediate));
+  private findSublistForRequester(requester?: MenuListRenderer<T>) {
+    return this.renderTree.find((x) => x.requester && x.requester === requester);
+  }
+
+  private focusRecentSubmenuItem() {
+    const recentMenuToFocus = this.getRecentSubmenu();
+
+    if (recentMenuToFocus) {
+      const items = recentMenuToFocus.item.listEl.querySelectorAll('wf-menu-item');
+      const index = Array.from(items).findIndex((x: any) => x.highlight === true);
+
+      // Attempt to resume focus back to the same element
+      recentMenuToFocus.item.listEl.focusMenuItem(index > -1 ? index : 0);
     }
   }
 
-  private dismissMenu(immediate: boolean) {
+  private getRecentSubmenu() {
+    return this.renderTree[this.renderTree.length - 1];
+  }
 
-    // Follow exact reverse steps.
-    // Additionally need transition event handler for smooth transition.
-    // 1. Remove dismiss handler.
-    // 2. Remove transition class.
-    // 3. After transition is complete, remove the surface from document.body.
 
-    if (immediate) {
-      this.surfaceCtrl.dismiss();
-    } else {
-      const action = tween({
-        duration: 160,
-        ease: easing.easeOut,
-        from: {
-          opacity: 1,
-          scaleX: 1,
-          scaleY: 1
-        },
-        to: {
-          opacity: 0.2,
-          scaleX: 0,
-          scaleY: 0
-        },
-      });
+  private async openMenu() {
 
-      action.start({
-        update: (v: any) => this.menuStyler.set(v),
-        complete: () => {
-          this.surfaceCtrl.dismiss();
-        }
-      });
+    this.state = 'opening';
+    this.surfaceCtrl.show();
+
+    this.renderTree = [];
+
+    // Attempt to open primary list
+    await this.drawList(this.primary, this);
+
+    // Listen for scroll events
+    this.backdropSub.on(() => this.dismissMenu());
+    this.keydownSub.on((e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Tab') {
+        this.dismissMenu();
+      }
+    });
+
+    this.state = 'opened';
+  }
+
+  private dismissMenu() {
+
+    if (this.renderTree.length === 0) {
+      return;
     }
+
+    this.state = 'closing';
 
     this.backdropSub.off();
-    this.scrollSub.off();
-    this.resizeSub.off();
+    this.keydownSub.off();
 
-    this.open = false;
-    this.dissmissFrame = 0;
-    this.menuListEl.dismissList();
+    this.clearList(this.primary);
+    this.surfaceCtrl.dismiss();
+
+    this.state = 'closed';
+  }
+
+  private aquireListForId(listId: string): MenuList<T> | null {
+    return this.querySelector(`wf-menu-list[wfId='${listId}']`);
+  }
+
+  private isListAlreadyOpen(listId: string) {
+    return this.renderTree.some((x) => x.item.wfId === listId);
   }
 
   render() {
-    return html`
-      <slot @click=${this.openMenu}></slot>
-    `;
+    return html`<slot></slot>`;
   }
 
 }

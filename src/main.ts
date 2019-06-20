@@ -4,8 +4,9 @@ import { Banner } from './banner/banner';
 import { Button } from './button/Button';
 import { Ripple } from './effects/ripple/Ripple';
 import { Menu } from './menu/Menu';
-import { MenuList } from './menu/MenuList';
 import { MenuItem } from './menu/MenuItem';
+import { MenuList } from './menu/MenuList';
+import { MenuListRenderer } from './menu/MenuListRenderer';
 import { MultiSelect } from './multiselect/multiselect';
 import { Overlay } from './surface/Overlay';
 
@@ -25,9 +26,10 @@ export function registerButton() {
 }
 
 export function registerMenu() {
-  customElements.define('wf-menu-list', MenuList);
-  customElements.define('wf-menu-item', MenuItem);
   customElements.define('wf-menu', Menu);
+  customElements.define('wf-menu-item', MenuItem);
+  customElements.define('wf-menu-list', MenuList);
+  customElements.define('wf-menu-list-renderer', MenuListRenderer);
 }
 
 export function registerMultiSelect() {

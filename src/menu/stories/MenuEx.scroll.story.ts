@@ -65,7 +65,8 @@ export const MenuDemo2: any = component(function MenuDemo(this: HTMLElement) {
         Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in
         their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
       </p>
-      <wf-menu @select=${onSelect} .renderer=${renderer} .items=${items}>
+      <wf-menu primary='1'>
+        <wf-menu-list wfId='1' @select=${onSelect} .renderer=${renderer} .items=${items}></wf-menu-list>
         <button>Open Menu</button>
       </wf-menu>
       <h2>Why do we use it?</h2>
