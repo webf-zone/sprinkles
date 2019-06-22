@@ -110,7 +110,7 @@ export const MenuDemo3: any = component(function MenuDemo(this: HTMLElement) {
     <wf-button .variant=${'unelevated'} @click=${() => setPosition('center')} >Center</wf-button>
 
     <wf-menu class=${position} primary='1'>
-      <wf-button class='menu-anchor' .variant=${'raised'}>Top Left</wf-button>
+      <wf-button class='menu-anchor' .variant=${'raised'}>OPEN MENU</wf-button>
       <wf-menu-list wfId='1' @select=${onSelect} .renderer=${renderer} .items=${primary}></wf-menu-list>
       <wf-menu-list wfId='2' @select=${onSelect} .renderer=${renderer} .items=${fruits}></wf-menu-list>
       <wf-menu-list wfId='3' @select=${onSelect} .renderer=${renderer} .items=${beverages}></wf-menu-list>

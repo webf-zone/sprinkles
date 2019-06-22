@@ -4,7 +4,7 @@ import { tween, easing, styler } from 'popmotion';
 import { listen } from '../Event';
 import { emit, applyStyle, promisor } from '../util';
 import { MenuListRenderer } from './MenuListRenderer';
-import { MenuDirection, compute } from './MenuPosition';
+import { MenuDirection, compute, MenuPosition } from './MenuPosition';
 
 import style from './MenuList.scss';
 
@@ -43,6 +43,7 @@ export class MenuList<T extends MenuListItem> extends LitElement {
   private listElStyler = styler(this.listEl);
 
   private inlineStyle: Partial<CSSStyleDeclaration> = {};
+  private position?: MenuPosition;
 
   public anchor?: HTMLElement;
 
@@ -105,11 +106,12 @@ export class MenuList<T extends MenuListItem> extends LitElement {
 
   private dismissMenu() {
     this.listEl.dismissList();
+    this.position = undefined;
   }
 
   private applyPosition() {
     // These functions will force layout thrashing
-    const position = compute(this.getAnchor()!, this.listEl, this.overlapping);
+    const position = compute(this.getAnchor()!, this.listEl, this.overlapping, this.position);
 
     const styles = {
       ...position.style,
@@ -117,8 +119,16 @@ export class MenuList<T extends MenuListItem> extends LitElement {
       minWidth: `${Math.max(this.offsetWidth, 112)}px`
     } as any;
 
-    applyStyle(this.listEl, styles, this.inlineStyle);
+    this.applyStyle(styles);
+    this.position = position;
+  }
 
+  readjustPosition() {
+    this.applyPosition();
+  }
+
+  private applyStyle(styles: any) {
+    applyStyle(this.listEl, styles, this.inlineStyle);
     this.inlineStyle = styles;
   }
 

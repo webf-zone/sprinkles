@@ -5,15 +5,19 @@ export interface MenuPosition {
   style: {
     top?: string;
     left?: string;
-    maxHeight?: string;
+    maxHeight: string;
     right?: string;
     bottom?: string;
   };
 }
 
-export function compute(anchor: HTMLElement, floatingElm: HTMLElement, overlap: boolean): MenuPosition {
-  const direction = suggest(anchor, floatingElm, overlap);
+export function compute(anchor: HTMLElement, floatingElm: HTMLElement, overlap: boolean, position?: MenuPosition): MenuPosition {
+  const direction = position ? position.direction : suggest(anchor, floatingElm, overlap);
   const style = getFixedPixels(anchor, direction, overlap);
+
+  if (position) {
+    style.maxHeight = position.style.maxHeight;
+  }
 
   return { direction, style };
 }

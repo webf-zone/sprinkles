@@ -47,8 +47,6 @@ export class Menu<T> extends LitElement {
     super.connectedCallback();
 
     this.addEventListener('click', () => this.openMenu());
-
-    // Listen for global events like scroll and resize
   }
 
   disconnectedCallback() {
@@ -191,6 +189,8 @@ export class Menu<T> extends LitElement {
         this.dismissMenu();
       }
     });
+    this.scrollSub.on(() => this.recalibrateMenu());
+    this.resizeSub.on(() => this.dismissMenu());
 
     this.state = 'opened';
   }
@@ -205,11 +205,17 @@ export class Menu<T> extends LitElement {
 
     this.backdropSub.off();
     this.keydownSub.off();
+    this.resizeSub.off();
+    this.scrollSub.off();
 
     this.clearList(this.primary);
     this.surfaceCtrl.dismiss();
 
     this.state = 'closed';
+  }
+
+  private recalibrateMenu() {
+    this.renderTree.forEach((x) => x.item.readjustPosition());
   }
 
   private aquireListForId(listId: string): MenuList<T> | null {

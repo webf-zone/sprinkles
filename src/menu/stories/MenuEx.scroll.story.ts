@@ -66,8 +66,8 @@ export const MenuDemo2: any = component(function MenuDemo(this: HTMLElement) {
         their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
       </p>
       <wf-menu primary='1'>
+        <wf-button .variant=${'raised'}>OPEN MENU</wf-button>
         <wf-menu-list wfId='1' @select=${onSelect} .renderer=${renderer} .items=${items}></wf-menu-list>
-        <button>Open Menu</button>
       </wf-menu>
       <h2>Why do we use it?</h2>
       <p>
