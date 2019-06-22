@@ -1,10 +1,13 @@
-import { LitElement, html, unsafeCSS, property } from 'lit-element';
+import { css, LitElement, html, unsafeCSS, property } from 'lit-element';
 
 import { listenScroll, listenResize, listen, EventSubscriber } from '../Event';
 import { create, SurfaceCtrl } from '../surface/Service';
 
+const style = css`:host {
+  display: inline-flex;
+}`;
+
 import { MenuList } from './MenuList';
-import style from './Menu.scss';
 import { MenuListRenderer } from './MenuListRenderer';
 
 /**

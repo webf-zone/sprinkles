@@ -30,7 +30,7 @@ export const MenuDemo1: any = component(function MenuDemo(this: HTMLElement) {
 
   return html`
     <wf-menu primary='1'>
-      <button>Open Menu</button>
+      <wf-button .variant=${'unelevated'}>Open</wf-button>
       <wf-menu-list wfId='1' @select=${onSelect} .renderer=${renderer} .items=${items}></wf-menu-list>
     </wf-menu>
     <p>Selected item: ${selected}</p>

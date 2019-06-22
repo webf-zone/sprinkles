@@ -61,8 +61,18 @@ export function getFixedPixels(anchor: HTMLElement, position: MenuDirection, ove
 
       return { top: `${top}px`, left: `${leftVal}px`, maxHeight };
     }
+
     case 'top-right': {
-      const rightVal = overlap ? (vWidth - right) : (vWidth - right - width);
+
+      const rightOverlap = vWidth - right;
+      const rightNonOverlap = vWidth - right + width;
+
+      // Margin of safety is useful for non-operlapping items in responsive scenario
+      // Submenu is non-overlapping and if it doesn't have enough space to expand then
+      // we forcefully overlap the the submenu
+      const marginOfSafety = right - width;
+
+      const rightVal = overlap || (marginOfSafety < 112) ? rightOverlap : rightNonOverlap;
       const maxHeight = `${vHeight - top - 32}px`;
 
       return { top: `${top}px`, right: `${rightVal}px`, maxHeight };
@@ -77,7 +87,12 @@ export function getFixedPixels(anchor: HTMLElement, position: MenuDirection, ove
     }
 
     case 'bottom-right': {
-      const rightVal = overlap ? (vWidth - right) : (vWidth - right - width);
+      const rightOverlap = vWidth - right;
+      const rightNonOverlap = vWidth - right + width;
+      const marginOfSafety = right - width;
+
+      const rightVal = overlap || (marginOfSafety < 112) ? rightOverlap : rightNonOverlap;
+
       const bottomVal = vHeight - bottom;
       const maxHeight = `${bottom - 32}px`;
 

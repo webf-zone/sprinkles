@@ -6,6 +6,7 @@ import { MENU_DIVIDER, MenuListItem, Divider } from '../MenuList';
 export const MenuDemo3: any = component(function MenuDemo(this: HTMLElement) {
 
   const [selected, setSelected] = useState();
+  const [position, setPosition] = useState('top-left');
 
   const primary: MenuListItem[] = [
     { label: 'Fruits', triggerFor: '2' },
@@ -88,8 +89,28 @@ export const MenuDemo3: any = component(function MenuDemo(this: HTMLElement) {
   }
 
   return html`
-    <wf-menu primary='1'>
-      <button>Open Menu</button>
+
+    <style>
+      h1 { margin-top: 4rem; }
+      wf-menu { position: fixed; }
+      .menu-anchor { --button-color: #239EDE; font-weight: bolder; }
+      .top-left { top: 1rem; left: 1rem; }
+      .top-right { top: 1rem; right: 1rem; }
+      .bottom-right { bottom: 1rem; right: 1rem; }
+      .bottom-left { bottom: 1rem; left: 1rem; }
+      .center { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    </style>
+
+    <h1>Nested Menu</h1>
+    <p>Try this example with responsive device (320px vs 480px)</p>
+    <wf-button .variant=${'unelevated'} @click=${() => setPosition('top-left')} >Top Left</wf-button>
+    <wf-button .variant=${'unelevated'} @click=${() => setPosition('top-right')} >Top Right</wf-button>
+    <wf-button .variant=${'unelevated'} @click=${() => setPosition('bottom-right')} >Bottom Right</wf-button>
+    <wf-button .variant=${'unelevated'} @click=${() => setPosition('bottom-left')} >Bottom Left</wf-button>
+    <wf-button .variant=${'unelevated'} @click=${() => setPosition('center')} >Center</wf-button>
+
+    <wf-menu class=${position} primary='1'>
+      <wf-button class='menu-anchor' .variant=${'raised'}>Top Left</wf-button>
       <wf-menu-list wfId='1' @select=${onSelect} .renderer=${renderer} .items=${primary}></wf-menu-list>
       <wf-menu-list wfId='2' @select=${onSelect} .renderer=${renderer} .items=${fruits}></wf-menu-list>
       <wf-menu-list wfId='3' @select=${onSelect} .renderer=${renderer} .items=${beverages}></wf-menu-list>
