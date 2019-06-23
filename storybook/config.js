@@ -1,3 +1,6 @@
+import { addParameters, configure } from '@storybook/html';
+import sprinkleTheme from './sprinkleTheme';
+
 // SUT
 import * as WF from '../src/main';
 
@@ -6,9 +9,15 @@ import '!style-loader!css-loader!sass-loader!../src/style.g.scss';
 
 import './example.css';
 
-import { configure } from '@storybook/html';
+// Sprinkle theme
+addParameters({
+  options: {
+    theme: sprinkleTheme
+  }
+});
 
 function loadStories() {
+
 
   WF.registerBanner([]);
   WF.registerButton();
