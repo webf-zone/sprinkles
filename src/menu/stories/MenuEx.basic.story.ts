@@ -29,8 +29,9 @@ export const MenuDemo1: any = component(function MenuDemo(this: HTMLElement) {
   }
 
   return html`
-    <wf-menu @select=${onSelect} .renderer=${renderer} .items=${items}>
-      <button>Open Menu</button>
+    <wf-menu primary='1'>
+      <wf-button .variant=${'unelevated'}>Open</wf-button>
+      <wf-menu-list wfId='1' @select=${onSelect} .renderer=${renderer} .items=${items}></wf-menu-list>
     </wf-menu>
     <p>Selected item: ${selected}</p>
   `;

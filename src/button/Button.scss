@@ -33,6 +33,8 @@ wf-surface-ripple {
   // It doesn't accept outline width as a variable
   @include mdc-button-outline-width(2px, 0px);
 
+  @include mdc-button-horizontal-padding(8px);
+
   // This is hacky code. Material doesn't recommend that we apply style like this.
   &::before,
   &::after {

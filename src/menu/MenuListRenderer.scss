@@ -1,0 +1,19 @@
+@import '@material/elevation/_mixins.scss';
+
+:host {
+
+  --background: #FFFFFF;
+
+  display: flex;
+  flex-direction: column;
+  min-width: 112px;
+
+  position: fixed;
+
+  overflow-y: auto;
+
+  @include mdc-elevation(1);
+
+  background-color: var(--background);
+  pointer-events: all;
+}
