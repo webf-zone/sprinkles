@@ -28,11 +28,11 @@ export function suggest(anchor: HTMLElement, floatingElm: HTMLElement, overlap: 
   let hAlign: 'left' | 'right';
   let vAlign: 'top' | 'bottom';
 
-  // Viewport width
-  const vWidth = window.innerWidth;
+  // Viewport width after scroll
+  const vWidth = document.documentElement.clientWidth;
 
-  // Viewport height
-  const vHeight = window.innerHeight;
+  // Viewport height after scroll
+  const vHeight = document.documentElement.clientHeight;
 
   // Floating element width
   const fWidth = floatingElm.offsetWidth;
@@ -53,8 +53,8 @@ export function suggest(anchor: HTMLElement, floatingElm: HTMLElement, overlap: 
 
 export function getFixedPixels(anchor: HTMLElement, position: MenuDirection, overlap: boolean) {
 
-  const vWidth = window.innerWidth;
-  const vHeight = window.innerHeight;
+  const vWidth = document.documentElement.clientWidth;
+  const vHeight = document.documentElement.clientHeight;
   const { left, top, right, bottom, width } = anchor.getBoundingClientRect();
 
   switch (position) {
