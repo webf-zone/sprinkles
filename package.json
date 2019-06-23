@@ -6,7 +6,8 @@
   "module": "dist/bundle.js",
   "scripts": {
     "build": "PROD=true rollup -c",
-    "dev": "start-storybook -p 9001 -c storybook"
+    "dev": "start-storybook -p 9001 -c storybook",
+    "build-storybook": "build-storybook -c storybook -o static"
   },
   "repository": {
     "type": "git",
