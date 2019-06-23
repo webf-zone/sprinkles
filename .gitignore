@@ -61,4 +61,4 @@ jspm_packages/
 .next
 
 dist/
-static/
+site/

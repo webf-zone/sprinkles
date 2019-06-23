@@ -7,7 +7,7 @@
   "scripts": {
     "build": "PROD=true rollup -c",
     "dev": "start-storybook -p 9001 -c storybook",
-    "build-storybook": "build-storybook -c storybook -o static"
+    "build-storybook": "build-storybook -c storybook -o site"
   },
   "repository": {
     "type": "git",
