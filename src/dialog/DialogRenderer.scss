@@ -1,20 +1,64 @@
 @import '@material/elevation/_mixins.scss';
 
 :host {
+  @include mdc-elevation(24);
 
-  @include mdc-elevation(2);
-
-  display: block;
   position: fixed;
   top: 50%;
   left: 50%;
+  transform: translate(-50%, -50%);
 
-  transform: translate3d(-50%, -60%, 0);
+  display: flex;
+  flex-direction: column;
 
-  min-width: 100px;
-  min-height: 100px;
+  min-width: 280px;
+  min-height: 120px;
   max-width: 90%;
   max-height: 80%;
 
   background-color: #FFFFFF;
+  pointer-events: all;
+}
+
+article {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.wrapper {
+  position: relative;
+  flex-grow: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+section {
+  min-height: 0;
+  overflow: auto;
+  height: 100%;
+}
+
+.top-shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  pointer-events: none;
+
+  background: linear-gradient(rgba(0, 0, 0, 0.1), transparent);
+}
+
+.bottom-shadow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  pointer-events: none;
+
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.1));
 }

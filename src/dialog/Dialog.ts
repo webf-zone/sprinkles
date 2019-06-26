@@ -61,12 +61,12 @@ export class Dialog<T> extends LitElement {
 
     this.dismissDialog();
 
-    this.renderer = null as any;
-    this.surface = null as any;
-
     if (this.initCalled && this.setup && this.setup.teardown) {
       this.setup.teardown(this.renderer, this.setupContext!);
     }
+
+    this.renderer = null as any;
+    this.surface = null as any;
   }
 
   private showDialog() {

@@ -11,8 +11,11 @@ export const DialogDemo: any = component(function DialogDemo(this: HTMLElement) 
 
   const setup = makeSetup((elm) => {
 
-    setTimeout(() => elm.innerHTML = 'This is a great thing to do', 100);
-    setTimeout(() => setOpen(false), 2000);
+    setTimeout(() => elm.innerHTML = `
+      <p>This is a great thing to do.</p>
+      <p>This is a great thing to do.</p>
+    `, 100);
+    // setTimeout(() => setOpen(false), 2000);
 
   }, (elm, cxt) => { });
 
