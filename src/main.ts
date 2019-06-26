@@ -2,6 +2,8 @@ import { CSSResult } from 'lit-element';
 
 import { Banner } from './banner/banner';
 import { Button } from './button/Button';
+import { Dialog } from './dialog/Dialog';
+import { DialogRenderer } from './dialog/DialogRenderer';
 import { Ripple } from './effects/ripple/Ripple';
 import { Menu } from './menu/Menu';
 import { MenuItem } from './menu/MenuItem';
@@ -23,6 +25,11 @@ export function registerBanner(styles: CSSResult[]) {
 
 export function registerButton() {
   customElements.define('wf-button', Button);
+}
+
+export function registerDialog() {
+  customElements.define('wf-dialog', Dialog);
+  customElements.define('wf-dialog-renderer', DialogRenderer);
 }
 
 export function registerMenu() {

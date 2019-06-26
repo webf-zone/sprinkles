@@ -21,6 +21,7 @@ function loadStories() {
 
   WF.registerBanner([]);
   WF.registerButton();
+  WF.registerDialog();
   WF.registerSurface();
   WF.registerSurfaceRipple();
 
@@ -29,7 +30,8 @@ function loadStories() {
 
   require('../src/multiselect/multiselect.story');
   require('../src/banner/banner.story');
-  require('../src/button/Button.story')
+  require('../src/button/Button.story');
+  require('../src/dialog/Dialog.story');
   require('../src/effects/ripple/Ripple.story');
   require('../src/menu/Menu.story');
   require('../src/surface/Surface.story');
