@@ -9,10 +9,16 @@ export class DialogRenderer extends LitElement {
   private sentinelObs: IntersectionObserver;
 
   @property()
-  private topShadow: boolean = true;
+  private hasHeader: boolean = false;
 
   @property()
-  private bottomShadow: boolean = true;
+  private hasFooter: boolean = false;
+
+  @property()
+  private topShadow: boolean = false;
+
+  @property()
+  private bottomShadow: boolean = false;
 
   constructor() {
     super();
@@ -42,29 +48,43 @@ export class DialogRenderer extends LitElement {
     this.sentinelObs.observe(this.shadowRoot!.querySelector('.bottom-sentinel')!);
   }
 
+  private onHeader() {
+    const slot = this.shadowRoot!.querySelector(`slot[name='header']`)! as HTMLSlotElement;
+
+    this.hasHeader = slot.assignedElements().length > 0;
+  }
+
+  private onFooter() {
+    const slot = this.shadowRoot!.querySelector(`slot[name='footer']`)! as HTMLSlotElement;
+
+    this.hasFooter = slot.assignedElements().length > 0;
+  }
+
   render() {
     return html`
       <article>
         <header>
-          <slot name='header'></slot>
+          <slot name='header' @slotchange=${this.onHeader}></slot>
         </header>
         <div class='wrapper'>
-          ${this.topShadow ? html`<div class='top-shadow'></div>` : html``}
           <section>
+            <div class='top-shadow' ?active=${this.topShadow && this.hasHeader}></div>
             <div class='top-sentinel'></div>
             <slot></slot>
             <div class='bottom-sentinel'></div>
           </section>
-          ${this.bottomShadow ? html`<div class='bottom-shadow'></div>` : html``}
+          <div class='bottom-shadow' ?active=${this.bottomShadow && this.hasFooter}></div>
         </div>
         <footer>
         </footer>
-        <slot name='footer'></slot>
+        <slot name='footer' @slotchange=${this.onFooter}></slot>
       </article>
     `;
   }
 
   firstUpdated() {
     this.setupObservation();
+    this.onHeader();
+    this.onFooter();
   }
 }

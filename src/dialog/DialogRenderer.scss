@@ -39,26 +39,46 @@ section {
   min-height: 0;
   overflow: auto;
   height: 100%;
+  z-index: 1;
+}
+
+.shadow {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 12px;
+  pointer-events: none;
+
+  opacity: 0;
+  transition: opacity 120ms ease-out;
 }
 
 .top-shadow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 12px;
-  pointer-events: none;
+  @extend .shadow;
 
-  background: linear-gradient(rgba(0, 0, 0, 0.1), transparent);
+  top: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 30%, transparent);
+
+  &[active] {
+    opacity: 1;
+  }
 }
 
 .bottom-shadow {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 12px;
-  pointer-events: none;
+  @extend .shadow;
 
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.1));
+  // Take decision if we should have a bottom shadow enabled?
+  display: none;
+
+  bottom: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.15) 70%, rgba(0, 0, 0, 0.3) 100%);
+
+  &[active] {
+    opacity: 1;
+  }
+}
+
+.top-sentinel,
+.bottom-sentinel {
+  height: 1px;
 }
