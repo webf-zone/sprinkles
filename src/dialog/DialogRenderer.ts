@@ -1,6 +1,7 @@
 import { LitElement, html, unsafeCSS, property } from 'lit-element';
 
 import style from './DialogRenderer.scss';
+import { classMap } from 'lit-html/directives/class-map';
 
 export class DialogRenderer extends LitElement {
 
@@ -74,21 +75,21 @@ export class DialogRenderer extends LitElement {
   render() {
     return html`
       <article>
-        <header>
+        <header class=${classMap({ available: this.hasHeader })}>
           <slot name='header' @slotchange=${this.onHeader}></slot>
         </header>
-        <div class='wrapper'>
-          <section>
+        <section>
+          <div class='content'>
             <div class='top-shadow' ?active=${this.topShadow && this.hasHeader}></div>
             <div class='top-sentinel'></div>
             <slot></slot>
             <div class='bottom-sentinel'></div>
-          </section>
+          </div>
           <div class='bottom-shadow' ?active=${this.bottomShadow && this.hasFooter}></div>
-        </div>
-        <footer>
+        </section>
+        <footer class=${classMap({ available: this.hasFooter })}>
+          <slot name='footer' @slotchange=${this.onFooter}></slot>
         </footer>
-        <slot name='footer' @slotchange=${this.onFooter}></slot>
       </article>
     `;
   }

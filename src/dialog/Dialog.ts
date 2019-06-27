@@ -1,5 +1,5 @@
 import { LitElement, css } from 'lit-element';
-import { spring, styler, ColdSubscription } from 'popmotion';
+import { tween, styler, ColdSubscription } from 'popmotion';
 
 import { DialogRenderer } from './DialogRenderer';
 import { create, SurfaceCtrl } from '../surface/Service';
@@ -101,10 +101,10 @@ export class Dialog<T> extends LitElement {
     this.surface.show();
 
     // Animation action
-    const action = spring({
-      from: { scale: 0.8, x: '-50%', y: '-60%' },
-      to: { scale: 1, x: '-50%', y: '-60%' },
-      stiffness: 200
+    const action = tween({
+      from: { scale: 0.7, x: '-50%', y: '-50%' },
+      to: { scale: 1, x: '-50%', y: '-50%' },
+      duration: 200
     });
 
     const myStyler = styler(this.renderer);
