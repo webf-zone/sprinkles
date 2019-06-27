@@ -7,6 +7,7 @@ export class DialogRenderer extends LitElement {
   static styles = [unsafeCSS(style)];
 
   private sentinelObs: IntersectionObserver;
+  private isObserving: boolean = false;
 
   @property()
   private hasHeader: boolean = false;
@@ -28,10 +29,15 @@ export class DialogRenderer extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
+
+    // The call is useless on first invocation as children are not rendered
+    // This call is useful for future events when disconnected and connected
+    this.setupObservation();
   }
 
   disconnectedCallback() {
     this.sentinelObs.disconnect();
+    this.isObserving = false;
   }
 
   private onIntersection(entries: IntersectionObserverEntry[]) {
@@ -44,8 +50,13 @@ export class DialogRenderer extends LitElement {
   }
 
   private setupObservation() {
-    this.sentinelObs.observe(this.shadowRoot!.querySelector('.top-sentinel')!);
-    this.sentinelObs.observe(this.shadowRoot!.querySelector('.bottom-sentinel')!);
+    const topSentinel = this.shadowRoot && this.shadowRoot.querySelector('.top-sentinel');
+
+    if (this.shadowRoot && topSentinel && !this.isObserving) {
+      this.sentinelObs.observe(topSentinel);
+      this.sentinelObs.observe(this.shadowRoot.querySelector('.bottom-sentinel')!);
+      this.isObserving = true;
+    }
   }
 
   private onHeader() {
