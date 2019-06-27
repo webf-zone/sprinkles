@@ -8,6 +8,12 @@ import { makeSetup } from './Dialog';
 export const DialogDemo: any = component(function DialogDemo(this: HTMLElement) {
 
   const [open, setOpen] = useState(true);
+  const [intent, setIntent] = useState('');
+
+  const closing = (e: CustomEvent<string>) => {
+    setOpen(false);
+    setIntent(e.detail);
+  }
 
   const setup = makeSetup((elm) => {
 
@@ -17,7 +23,7 @@ export const DialogDemo: any = component(function DialogDemo(this: HTMLElement) 
       <p>This is a great thing to do.</p>
       <p>This is a great thing to do.</p>
       <p>This is a great thing to do.</p>
-      <wf-button slot='footer' variant='unelevated'>Proceed</wf-button>
+      <wf-button wf-dialog-intent slot='footer' variant='unelevated'>Proceed</wf-button>
       <wf-button slot='footer'>Cancel</wf-button>
     `, 100);
     // setTimeout(() => setOpen(false), 2000);
@@ -28,7 +34,8 @@ export const DialogDemo: any = component(function DialogDemo(this: HTMLElement) 
   return html`
     <div>
       <wf-button variant='raised' @click=${() => setOpen(!open)}>Open Dialog</wf-button>
-      <wf-dialog .setup=${setup} .open=${open} @closing=${() => setOpen(false)}></wf-dialog>
+      <h3>Last closing intent: ${intent}</h3>
+      <wf-dialog .setup=${setup} .open=${open} @closing=${closing}></wf-dialog>
     </div>
   `;
 });

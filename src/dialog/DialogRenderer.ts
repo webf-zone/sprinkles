@@ -1,7 +1,11 @@
 import { LitElement, html, unsafeCSS, property } from 'lit-element';
-
-import style from './DialogRenderer.scss';
 import { classMap } from 'lit-html/directives/class-map';
+
+import { emit } from '../util';
+import style from './DialogRenderer.scss';
+
+const INTENT_ATTR = 'wf-dialog-intent';
+
 
 export class DialogRenderer extends LitElement {
 
@@ -70,6 +74,18 @@ export class DialogRenderer extends LitElement {
     this.hasFooter = slot.assignedElements().length > 0;
   }
 
+  private onFooterAction(e: MouseEvent) {
+    const target = (e.target as HTMLElement);
+    const intent = target.getAttribute(INTENT_ATTR);
+    const tag = target.tagName;
+
+    if (typeof intent === 'string') {
+      emit(this, 'intent', intent || 'success');
+    } else if (intent === null && (tag === 'WF-BUTTON' || tag === 'BUTTON' )) {
+      emit(this, 'intent', 'cancel');
+    }
+  }
+
   render() {
 
     const footerClasses = {
@@ -90,7 +106,7 @@ export class DialogRenderer extends LitElement {
           </div>
           <div class='bottom-shadow' ?active=${this.bottomShadow && this.hasFooter}></div>
         </section>
-        <footer class=${classMap(footerClasses)}>
+        <footer class=${classMap(footerClasses)} @click=${this.onFooterAction}>
           <slot name='footer' @slotchange=${this.onFooterSlot}></slot>
         </footer>
       </article>

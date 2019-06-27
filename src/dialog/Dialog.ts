@@ -65,6 +65,8 @@ export class Dialog<T> extends LitElement {
     this.backdropSub = listen('click', this.surfaceCtrl.backdrop);
     this.keydownSub = listen('keydown', this.surfaceCtrl.overlay);
 
+    this.renderer.addEventListener('intent', (e: any) => this.emitClosing(e.detail));
+
     if (this.open) {
       this.showDialog();
     }
@@ -111,7 +113,7 @@ export class Dialog<T> extends LitElement {
 
     this.backdropSub.on(() => this.emitClosing('cancel'));
     this.keydownSub.on((e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === 'Tab') {
+      if (e.key === 'Escape') {
         this.emitClosing('cancel');
       }
     });
@@ -175,8 +177,8 @@ export class Dialog<T> extends LitElement {
     }
   }
 
-  private emitClosing(reason: string) {
-    emit(this, 'closing');
+  private emitClosing(intent: string) {
+    emit(this, 'closing', intent);
   }
 }
 
