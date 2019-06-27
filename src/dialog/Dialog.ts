@@ -1,4 +1,5 @@
 import { LitElement, css } from 'lit-element';
+import { spring, styler, ColdSubscription } from 'popmotion';
 
 import { DialogRenderer } from './DialogRenderer';
 import { create, SurfaceCtrl } from '../surface/Service';
@@ -29,6 +30,8 @@ export class Dialog<T> extends LitElement {
 
   private focusableElm: Element | null = null;
 
+  private animationSub?: ColdSubscription;
+
   constructor() {
     super();
   }
@@ -54,6 +57,10 @@ export class Dialog<T> extends LitElement {
 
     this.renderer = new DialogRenderer();
     this.surface = create();
+
+    if (this.open) {
+      this.showDialog();
+    }
   }
 
   disconnectedCallback() {
@@ -67,12 +74,18 @@ export class Dialog<T> extends LitElement {
 
     this.renderer = null as any;
     this.surface = null as any;
+    this.setupContext = undefined;
+    this.initCalled = false;
+
+    this.stopSubscriptions();
   }
 
   private showDialog() {
 
-    // Do nothing if dialog is already open
-    if (this.isOpen) {
+    // Do nothing if dialog is already open.
+    // Also, for dialog to show, it must be connected to the DOM.
+    // If it is not connected then, there is no point in opening the it.
+    if (this.isOpen || !this.isConnected) {
       return;
     }
 
@@ -86,6 +99,23 @@ export class Dialog<T> extends LitElement {
 
     this.surface.children([this.renderer]);
     this.surface.show();
+
+    // Animation action
+    const action = spring({
+      from: { scale: 0.8, x: '-50%', y: '-60%' },
+      to: { scale: 1, x: '-50%', y: '-60%' },
+      stiffness: 200
+    });
+
+    const myStyler = styler(this.renderer);
+
+    // Stop if any previous animation was running
+    this.stopSubscriptions();
+
+    this.animationSub = action.start({
+      update: (v: any) => myStyler.set(v),
+      complete: () => this.animationSub = undefined
+    });
 
     this.isOpen = true;
   }
@@ -104,6 +134,11 @@ export class Dialog<T> extends LitElement {
       (this.focusableElm as HTMLElement).focus();
       this.focusableElm = null;
     }
+  }
+
+  private stopSubscriptions() {
+    this.animationSub && this.animationSub.stop();
+    this.animationSub = undefined;
   }
 
   private findFocusableItem(currentElm: Element | null): Element | null {
