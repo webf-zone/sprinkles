@@ -60,35 +60,38 @@ export class DialogRenderer extends LitElement {
     }
   }
 
-  private onHeader() {
+  private onHeaderSlot() {
     const slot = this.shadowRoot!.querySelector(`slot[name='header']`)! as HTMLSlotElement;
-
     this.hasHeader = slot.assignedElements().length > 0;
   }
 
-  private onFooter() {
+  private onFooterSlot() {
     const slot = this.shadowRoot!.querySelector(`slot[name='footer']`)! as HTMLSlotElement;
-
     this.hasFooter = slot.assignedElements().length > 0;
   }
 
   render() {
+
+    const footerClasses = {
+      available: this.hasFooter,
+    };
+
     return html`
       <article>
         <header class=${classMap({ available: this.hasHeader })}>
-          <slot name='header' @slotchange=${this.onHeader}></slot>
+          <slot name='header' @slotchange=${this.onHeaderSlot}></slot>
         </header>
         <section>
+          <div class='top-shadow' ?active=${this.topShadow && this.hasHeader}></div>
           <div class='content'>
-            <div class='top-shadow' ?active=${this.topShadow && this.hasHeader}></div>
             <div class='top-sentinel'></div>
             <slot></slot>
             <div class='bottom-sentinel'></div>
           </div>
           <div class='bottom-shadow' ?active=${this.bottomShadow && this.hasFooter}></div>
         </section>
-        <footer class=${classMap({ available: this.hasFooter })}>
-          <slot name='footer' @slotchange=${this.onFooter}></slot>
+        <footer class=${classMap(footerClasses)}>
+          <slot name='footer' @slotchange=${this.onFooterSlot}></slot>
         </footer>
       </article>
     `;
@@ -96,7 +99,7 @@ export class DialogRenderer extends LitElement {
 
   firstUpdated() {
     this.setupObservation();
-    this.onHeader();
-    this.onFooter();
+    this.onHeaderSlot();
+    this.onFooterSlot();
   }
 }

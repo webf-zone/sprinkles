@@ -7,13 +7,18 @@ import { makeSetup } from './Dialog';
 
 export const DialogDemo: any = component(function DialogDemo(this: HTMLElement) {
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const setup = makeSetup((elm) => {
 
     setTimeout(() => elm.innerHTML = `
+      <h2 slot='header'>Awesome dialog</h2>
       <p>This is a great thing to do.</p>
       <p>This is a great thing to do.</p>
+      <p>This is a great thing to do.</p>
+      <p>This is a great thing to do.</p>
+      <wf-button slot='footer' variant='unelevated'>Proceed</wf-button>
+      <wf-button slot='footer'>Cancel</wf-button>
     `, 100);
     // setTimeout(() => setOpen(false), 2000);
 
@@ -23,7 +28,7 @@ export const DialogDemo: any = component(function DialogDemo(this: HTMLElement) 
   return html`
     <div>
       <wf-button variant='raised' @click=${() => setOpen(!open)}>Open Dialog</wf-button>
-      <wf-dialog .setup=${setup} .open=${open}></wf-dialog>
+      <wf-dialog .setup=${setup} .open=${open} @closing=${() => setOpen(false)}></wf-dialog>
     </div>
   `;
 });

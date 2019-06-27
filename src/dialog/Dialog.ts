@@ -3,6 +3,8 @@ import { tween, styler, ColdSubscription } from 'popmotion';
 
 import { DialogRenderer } from './DialogRenderer';
 import { create, SurfaceCtrl } from '../surface/Service';
+import { listen, EventSubscriber } from '../Event';
+import { emit } from '../util';
 
 export type DialogInit<T> = (elm: DialogRenderer) => T;
 export type DialogCleanup<T> = (elm: DialogRenderer, context: T) => void;
@@ -24,13 +26,16 @@ export class Dialog<T> extends LitElement {
   setupContext?: T;
 
   private renderer!: DialogRenderer;
-  private surface!: SurfaceCtrl;
   private initCalled: boolean = false;
   private isOpen: boolean = false;
 
   private focusableElm: Element | null = null;
 
   private animationSub?: ColdSubscription;
+
+  private surfaceCtrl!: SurfaceCtrl;
+  private backdropSub!: EventSubscriber;
+  private keydownSub!: EventSubscriber;
 
   constructor() {
     super();
@@ -56,7 +61,9 @@ export class Dialog<T> extends LitElement {
     super.connectedCallback();
 
     this.renderer = new DialogRenderer();
-    this.surface = create();
+    this.surfaceCtrl = create();
+    this.backdropSub = listen('click', this.surfaceCtrl.backdrop);
+    this.keydownSub = listen('keydown', this.surfaceCtrl.overlay);
 
     if (this.open) {
       this.showDialog();
@@ -72,12 +79,14 @@ export class Dialog<T> extends LitElement {
       this.setup.teardown(this.renderer, this.setupContext!);
     }
 
+
+    this.backdropSub = null as any;
     this.renderer = null as any;
-    this.surface = null as any;
+    this.surfaceCtrl = null as any;
     this.setupContext = undefined;
     this.initCalled = false;
 
-    this.stopSubscriptions();
+    this.cleanupAnimation();
   }
 
   private showDialog() {
@@ -97,8 +106,15 @@ export class Dialog<T> extends LitElement {
       this.initCalled = true;
     }
 
-    this.surface.children([this.renderer]);
-    this.surface.show();
+    this.surfaceCtrl.children([this.renderer]);
+    this.surfaceCtrl.show();
+
+    this.backdropSub.on(() => this.emitClosing('cancel'));
+    this.keydownSub.on((e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Tab') {
+        this.emitClosing('cancel');
+      }
+    });
 
     // Animation action
     const action = tween({
@@ -110,11 +126,11 @@ export class Dialog<T> extends LitElement {
     const myStyler = styler(this.renderer);
 
     // Stop if any previous animation was running
-    this.stopSubscriptions();
+    this.cleanupAnimation();
 
     this.animationSub = action.start({
       update: (v: any) => myStyler.set(v),
-      complete: () => this.animationSub = undefined
+      complete: () => this.cleanupAnimation()
     });
 
     this.isOpen = true;
@@ -127,8 +143,12 @@ export class Dialog<T> extends LitElement {
     }
 
     this.isOpen = false;
-    this.surface.dismiss();
-    this.surface.children([]);
+
+    this.cleanupAnimation();
+    this.keydownSub.off();
+    this.backdropSub.off();
+    this.surfaceCtrl.dismiss();
+    this.surfaceCtrl.children([]);
 
     if (this.focusableElm) {
       (this.focusableElm as HTMLElement).focus();
@@ -136,7 +156,7 @@ export class Dialog<T> extends LitElement {
     }
   }
 
-  private stopSubscriptions() {
+  private cleanupAnimation() {
     this.animationSub && this.animationSub.stop();
     this.animationSub = undefined;
   }
@@ -153,6 +173,10 @@ export class Dialog<T> extends LitElement {
     } else {
       return null;
     }
+  }
+
+  private emitClosing(reason: string) {
+    emit(this, 'closing');
   }
 }
 

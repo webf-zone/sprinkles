@@ -2,8 +2,9 @@
 
 :host {
 
-  --wf-dialog-padding: 1rem;
-  --wf-dialog-radius: 4px;
+  --wf-padding: 1rem;
+  --wf-radius: 4px;
+  --wf-width: auto;
 
   @include mdc-elevation(24);
 
@@ -15,12 +16,13 @@
   display: flex;
   flex-direction: column;
 
+  width: var(--wf-width);
   min-width: 280px;
   min-height: 120px;
   max-width: 90%;
   max-height: 80%;
 
-  border-radius: var(--wf-dialog-radius);
+  border-radius: var(--wf-radius);
   overflow: hidden;
 
   background-color: #FFFFFF;
@@ -44,13 +46,18 @@ section {
 
 header {
   &.available {
-    padding: var(--wf-dialog-padding);
+    padding: var(--wf-padding);
   }
 }
 
 footer {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+
   &.available {
-    padding: calc(var(--wf-dialog-padding) / 2);
+    padding: calc(var(--wf-padding) / 2);
   }
 }
 
@@ -60,7 +67,7 @@ footer {
   height: 100%;
   z-index: 1;
 
-  padding: var(--wf-dialog-padding);
+  padding: var(--wf-padding);
 }
 
 .shadow {
