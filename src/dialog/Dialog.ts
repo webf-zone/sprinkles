@@ -10,8 +10,8 @@ export type DialogInit<T> = (elm: DialogRenderer) => T;
 export type DialogCleanup<T> = (elm: DialogRenderer, context: T) => void;
 
 export type DialogSetup<T = any> = {
-  init: (elm: DialogRenderer) => T;
-  teardown?: (elm: DialogRenderer, context: T) => void;
+  init: DialogInit<T>;
+  teardown?: DialogCleanup<T>;
 };
 
 export function makeSetup<T>(init: DialogInit<T>, teardown?: DialogCleanup<T>): DialogSetup<T> {
