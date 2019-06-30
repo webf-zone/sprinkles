@@ -24,6 +24,7 @@ export class Menu<T> extends LitElement {
 
   private surfaceCtrl: SurfaceCtrl = create();
 
+  // Reserved for future use
   private state: 'normal' | 'opening' | 'opened' | 'closing' | 'closed' = 'normal';
 
   // Global events

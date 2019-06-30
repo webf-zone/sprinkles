@@ -79,9 +79,12 @@ export class Ripple extends LitElement {
         scale: scaleRatio,
         opacity: 0,
       },
-      duration: 400,
+      duration: 300,
       ease: easing.easeOut
     });
+
+    // Stop if any previous ripple was running
+    this.stopRipple();
 
     this.anySubscription = action.start({
       update: (v: any) => circleStyler.set(v),

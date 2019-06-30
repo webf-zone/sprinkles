@@ -9,7 +9,7 @@ export interface SurfaceCtrl {
   children: (nodes: HTMLElement[]) => void;
 }
 
-// Array `surfaces` is a queue acting as a singleton and thus mutable.
+// Array `surfaces` is a queue acting as a singleton and thus MUTABLE.
 const surfaces: Surface[] = [];
 
 export function create() {

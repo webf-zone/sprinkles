@@ -1,0 +1,111 @@
+@import '@material/elevation/_mixins.scss';
+
+:host {
+  --wf-padding: 1rem;
+  --wf-radius: 4px;
+  --wf-width: auto;
+
+  @include mdc-elevation(24);
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+
+  display: flex;
+  flex-direction: column;
+
+  width: var(--wf-width);
+  min-width: 280px;
+  min-height: 120px;
+  max-width: 90%;
+  max-height: 80%;
+
+  border-radius: var(--wf-radius);
+  overflow: hidden;
+
+  background-color: #FFFFFF;
+  pointer-events: all;
+}
+
+article {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+section {
+  position: relative;
+  flex-grow: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  &.available {
+    padding: var(--wf-padding);
+  }
+}
+
+footer {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+
+  &.available {
+    padding: calc(var(--wf-padding) / 2);
+  }
+}
+
+.content {
+  min-height: 0;
+  overflow: auto;
+  height: 100%;
+  z-index: 1;
+
+  padding: var(--wf-padding);
+}
+
+.shadow {
+  position: absolute;
+  left: 0;
+  width: 100%;
+
+  pointer-events: none;
+
+  opacity: 0;
+  transition: all 160ms ease-out;
+}
+
+.top-shadow {
+  @extend .shadow;
+
+  // TODO: How much should be the height?
+  height: 4px;
+  top: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 30%, transparent);
+
+  &[active] {
+    opacity: 1;
+  }
+}
+
+.bottom-shadow {
+  @extend .shadow;
+
+  bottom: 0;
+  border-top: 1px solid transparent;
+
+  &[active] {
+    opacity: 1;
+    border-top-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+.top-sentinel,
+.bottom-sentinel {
+  height: 1px;
+}
