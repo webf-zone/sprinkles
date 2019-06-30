@@ -23,9 +23,11 @@ export class Ripple extends LitElement {
 
       const { left, top } = this.getBoundingClientRect();
 
-      // Distance of the event click from the surface's padding edge
-      const evX = e.pageX - (left + window.scrollX);
-      const evY = e.pageY - (top + window.scrollY);
+      // (evX, evY) is the distance of the event click from the surface's padding edge.
+      // With keyboard click event, negative values are calculated for evX & evY.
+      // Thus, use (0, 0) as evX and evY when click happened due to keyboard event.
+      const evX = Math.max(0, e.pageX - (left + window.scrollX));
+      const evY = Math.max(0, e.pageY - (top + window.scrollY));
 
       this.initiateRipple(evX, evY);
     });
@@ -79,7 +81,7 @@ export class Ripple extends LitElement {
         scale: scaleRatio,
         opacity: 0,
       },
-      duration: 300,
+      duration: 400,
       ease: easing.easeOut
     });
 
