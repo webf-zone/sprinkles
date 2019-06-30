@@ -136,6 +136,8 @@ export class Dialog<T> extends LitElement {
     });
 
     this.isOpen = true;
+
+    emit(this, 'opened', { elm: this.renderer, context: this.setupContext });
   }
 
   private dismissDialog() {
@@ -156,6 +158,8 @@ export class Dialog<T> extends LitElement {
       (this.focusableElm as HTMLElement).focus();
       this.focusableElm = null;
     }
+
+    emit(this, 'closed');
   }
 
   private cleanupAnimation() {
