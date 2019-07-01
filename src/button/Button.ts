@@ -1,4 +1,3 @@
-import { MDCRipple } from '@material/ripple';
 import { LitElement, html, unsafeCSS, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 
@@ -35,6 +34,18 @@ export class Button extends LitElement {
   // protected createRenderRoot() {
   //   return this.attachShadow({ mode: 'open', delegatesFocus: true });
   // }
+
+  // WARNING: This is highly experimental stuff.
+  // Not sure if this is the right practice.
+  public focus(opts?: FocusOptions) {
+    super.focus(opts);
+
+    const button = this.shadowRoot && this.shadowRoot.querySelector('button');
+
+    if (button) {
+      button.focus();
+    }
+  }
 
   connectedCallback() {
     super.connectedCallback();
