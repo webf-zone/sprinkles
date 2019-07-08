@@ -29,8 +29,6 @@ export class Dialog<T> extends LitElement {
   private initCalled: boolean = false;
   private isOpen: boolean = false;
 
-  private focusableElm: Element | null = null;
-
   private animationSub?: ColdSubscription;
 
   private surfaceCtrl!: SurfaceCtrl;
@@ -100,8 +98,6 @@ export class Dialog<T> extends LitElement {
       return;
     }
 
-    this.focusableElm = this.findFocusableItem(document.activeElement);
-
     // Call init function only once
     if (!this.initCalled && this.setup) {
       this.setupContext = this.setup.init(this.renderer);
@@ -137,6 +133,8 @@ export class Dialog<T> extends LitElement {
 
     this.isOpen = true;
 
+    this.renderer.open();
+
     emit(this, 'opened', { elm: this.renderer, context: this.setupContext });
   }
 
@@ -154,10 +152,7 @@ export class Dialog<T> extends LitElement {
     this.surfaceCtrl.dismiss();
     this.surfaceCtrl.children([]);
 
-    if (this.focusableElm) {
-      (this.focusableElm as HTMLElement).focus();
-      this.focusableElm = null;
-    }
+    this.renderer.dismiss();
 
     emit(this, 'closed');
   }
@@ -165,20 +160,6 @@ export class Dialog<T> extends LitElement {
   private cleanupAnimation() {
     this.animationSub && this.animationSub.stop();
     this.animationSub = undefined;
-  }
-
-  private findFocusableItem(currentElm: Element | null): Element | null {
-    // Recursively attempt to find currently focused item.
-    // Pierce through the shadow dom as much as possible.
-    if (currentElm) {
-      if (currentElm.shadowRoot) {
-        return this.findFocusableItem(currentElm.shadowRoot.activeElement);
-      } else {
-        return currentElm;
-      }
-    } else {
-      return null;
-    }
   }
 
   private emitClosing(intent: string) {

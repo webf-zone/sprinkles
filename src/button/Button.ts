@@ -35,8 +35,10 @@ export class Button extends LitElement {
   //   return this.attachShadow({ mode: 'open', delegatesFocus: true });
   // }
 
+  // Differentiating between focusable and tabbable
   // WARNING: This is highly experimental stuff.
   // Not sure if this is the right practice.
+  // Another one is that even a focusable element cannot be tabable.
   public focus(opts?: FocusOptions) {
     super.focus(opts);
 

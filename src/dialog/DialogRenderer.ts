@@ -2,6 +2,7 @@ import { LitElement, html, unsafeCSS, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 
 import { emit } from '../util';
+import { findFocusableItem } from './helper';
 import style from './DialogRenderer.scss';
 
 const INTENT_ATTR = 'wf-dialog-intent';
@@ -26,6 +27,8 @@ export class DialogRenderer extends LitElement {
   @property()
   private bottomShadow: boolean = false;
 
+  private focusableElm: Element | null = null;
+
   constructor() {
     super();
 
@@ -43,6 +46,17 @@ export class DialogRenderer extends LitElement {
   disconnectedCallback() {
     this.sentinelObs.disconnect();
     this.isObserving = false;
+  }
+
+  open() {
+    this.focusableElm = findFocusableItem(document.activeElement);
+  }
+
+  dismiss() {
+    if (this.focusableElm) {
+      (this.focusableElm as HTMLElement).focus();
+      this.focusableElm = null;
+    }
   }
 
   private onIntersection(entries: IntersectionObserverEntry[]) {
