@@ -26,8 +26,6 @@ export const RippleDemo: any = component(function RippleDemo(this: HTMLElement) 
 
 customElements.define('wf-surface-ripple-demo', RippleDemo);
 
-storiesOf('Effects', module)
+storiesOf('Effects|Ripple', module)
   .addParameters({ notes })
-  .add('Ripple', () => {
-    return new RippleDemo();
-  });
+  .add('Basic', () => new RippleDemo());

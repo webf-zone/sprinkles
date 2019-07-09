@@ -23,6 +23,7 @@ function loadStories() {
   WF.registerButton();
   WF.registerDialog();
   WF.registerSurface();
+  WF.registerSurfaceBullet();
   WF.registerSurfaceRipple();
 
   WF.registerMenu();
@@ -33,6 +34,7 @@ function loadStories() {
   require('../src/button/Button.story');
   require('../src/dialog/Dialog.story');
   require('../src/effects/ripple/Ripple.story');
+  require('../src/effects/bullet/Bullet.story');
   require('../src/menu/Menu.story');
   require('../src/surface/Surface.story');
 }

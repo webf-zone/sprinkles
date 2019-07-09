@@ -4,6 +4,7 @@ import { Banner } from './banner/banner';
 import { Button } from './button/Button';
 import { Dialog } from './dialog/Dialog';
 import { DialogRenderer } from './dialog/DialogRenderer';
+import { Bullet } from './effects/bullet/Bullet';
 import { Ripple } from './effects/ripple/Ripple';
 import { Menu } from './menu/Menu';
 import { MenuItem } from './menu/MenuItem';
@@ -49,4 +50,8 @@ export function registerSurface() {
 
 export function registerSurfaceRipple() {
   customElements.define('wf-surface-ripple', Ripple);
+}
+
+export function registerSurfaceBullet() {
+  customElements.define('wf-surface-bullet', Bullet);
 }
