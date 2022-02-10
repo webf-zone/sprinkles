@@ -50,7 +50,7 @@
     "babel-loader": "^8.0.5",
     "css-loader": "^2.1.1",
     "haunted": "^4.4.0",
-    "node-sass": "^4.11.0",
+    "node-sass": "^7.0.0",
     "raw-loader": "^2.0.0",
     "rollup": "^1.10.0",
     "rollup-plugin-node-resolve": "^4.2.3",
